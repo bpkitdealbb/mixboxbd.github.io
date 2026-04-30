@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mix-box-v2.2'; // ভার্সন আপডেট করেছি
+const CACHE_NAME = 'mix-box-v2.1'; // ভার্সন আপডেট করেছি
 const urlsToCache = [
   './',
   './index.html',
@@ -6,9 +6,9 @@ const urlsToCache = [
   'https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2'
 ];
 
-// ইনস্টল এবং অ্যাক্টিভেট হওয়ার সাথে সাথে পুরোনোটা রিপ্লেস করা
+// ইনস্টল এবং অ্যাক্টিভেট
 self.addEventListener('install', event => {
-  self.skipWaiting(); // গুরুত্বপূর্ণ: অপেক্ষা না করে সাথে সাথে ইনস্টল করো
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
@@ -16,7 +16,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  self.clients.claim(); // গুরুত্বপূর্ণ: সব ক্লায়েন্টকে নতুন ভার্সন কন্ট্রোল করতে দাও
+  self.clients.claim();
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -26,11 +26,38 @@ self.addEventListener('activate', event => {
   );
 });
 
-// ফেচ হ্যান্ডলার
+// ফেচ হ্যান্ডলার (স্মার্ট ক্যাশিং স্ট্র্যাটেজি)
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      // যদি ক্যাশে থাকে, তবে ব্যাকগ্রাউন্ডে নেটওয়ার্ক থেকে আপডেট চেক করবে
+      if (response) {
+        // নেটওয়ার্ক রিকোয়েস্ট পাঠিয়ে ক্যাশ আপডেট করার চেষ্টা (নীরবে)
+        fetch(event.request).then(networkResponse => {
+            caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, networkResponse.clone());
+            });
+        }).catch(() => {}); // নেটওয়ার্ক ফেইল করলে ইগনোর করুন
+        
+        // ক্যাশ থেকে রেসপন্স দিন
+        return response;
+      }
+      
+      // যদি ক্যাশে না থাকে, নেটওয়ার্ক থেকে আনুন এবং ক্যাশ করুন
+      return fetch(event.request).then(response => {
+        // ভ্যালিড রেসপন্স চেক করুন
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+
+        return response;
+      });
     })
   );
 });
