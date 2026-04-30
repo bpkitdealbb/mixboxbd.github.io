@@ -150,28 +150,54 @@
         // কনফিগারেশন সেকশন
         // ============================================================
         const CONFIG = {
-            // যখনই নতুন ডিপ্লয় করবেন, নিচের ভার্সন নম্বরটি বাড়িয়ে দিন (যেমন: 2.3)
+            // নতুন ডিপ্লয় করলে ভার্সন বাড়াবেন (যেমন: 2.3)
             deploymentUrl: "https://script.google.com/macros/s/AKfycbzCm0r1T2F4D3wyjIFK2GHjG0OQ3XBAqkHKNr_zm9J1t4r1lwJg8R7_G4idpKdVO6TV/exec",
             logoUrl: "https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2",
             appName: "MIX BOX",
             version: "2.2" 
         };
 
+        document.title = CONFIG.appName;
+        document.getElementById('loader-logo').src = CONFIG.logoUrl;
+        
+        const iframe = document.getElementById('shopFrame');
+        const loader = document.getElementById('loader-container');
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlVersion = urlParams.get('v');
+
         // ============================================================
-        // ১. Service Worker এবং অটোমেটিক আপডেট লজিক
+        // স্মার্ট ভার্সন চেক এবং লিংক ক্লিনিং লজিক
+        // ============================================================
+        
+        // ১. আগের সেভ করা ভার্সন চেক করা (LocalStorage থেকে)
+        const savedVersion = localStorage.getItem('mixbox_version');
+        const needsUpdate = (savedVersion !== CONFIG.version);
+
+        // ২. যদি আপডেট প্রয়োজন হয় এবং বর্তমানে ভার্সন প্যারামিটার না থাকে
+        if (needsUpdate && !urlVersion) {
+            // তবে একবার রিডাইরেক্ট করে নতুন ক্যাশ লোড করতে হবে
+            window.location.replace(window.location.origin + window.location.pathname + '?v=' + CONFIG.version);
+        }
+        // ৩. যদি ইতিমধ্যে ভার্সন প্যারামিটার থাকে (রিডাইরেক্ট হয়েছে)
+        else if (urlVersion) {
+            // লোকাল স্টোরেজে নতুন ভার্সন সেভ করুন
+            localStorage.setItem('mixbox_version', CONFIG.version);
+            
+            // ব্যবহারকারীর চোখের আড়ালে লিংকটি পরিষ্কার করে ফেলুন (?v=2.2 রিমুভ করুন)
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // ============================================================
+        // Service Worker লজিক
         // ============================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
                 .then(reg => {
-                    console.log('Service Worker Registered');
-                    
-                    // নতুন আপডেট ডিটেক্ট করা
                     reg.addEventListener('updatefound', () => {
                         const newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
-                            // নতুন ওয়ার্কার ইনস্টল হলে এবং বর্তমান ওয়ার্কার এক্টিভ থাকলে
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // সাথে সাথে পেজ রিলোড করা হবে যাতে নতুন ভার্সন আসে
+                                // নতুন SW এলে সাথে সাথে রিফ্রেশ
                                 window.location.reload();
                             }
                         });
@@ -181,40 +207,18 @@
         }
 
         // ============================================================
-        // ২. ফোর্সড রিলোড লজিক (Cache Busting)
+        // আইফ্রেম লোড ফাংশন
         // ============================================================
-        // যদি URL এ টাইমস্ট্যাম্প না থাকে, তবে টাইমস্ট্যাম্প যুক্ত করে রিলোড করা হবে।
-        // এটি ব্রাউজারকে বাধ্য করবে নতুন index.html ফাইল ডাউনলোড করতে।
-        if (!window.location.search.includes('t=')) {
-            const baseUrl = window.location.href.split('?')[0];
-            const newUrl = `${baseUrl}?v=${CONFIG.version}&t=${Date.now()}`;
-            window.location.replace(newUrl);
-        }
-
-        // ============================================================
-        // ৩. আইফ্রেম লোড এবং ইউজার ইন্টারফেস লজিক
-        // ============================================================
-        document.title = CONFIG.appName;
-        document.getElementById('loader-logo').src = CONFIG.logoUrl;
-        
-        const iframe = document.getElementById('shopFrame');
-        const loader = document.getElementById('loader-container');
-
         function loadApp() {
-            // URL প্যারামিটার থেকে ভার্সন নম্বর নেওয়া (না থাকলে কনফিগ থেকে নেবে)
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentVersion = urlParams.get('v') || CONFIG.version;
+            // ইউআরএল থেকে ভার্সন নিন, না থাকলে কনফিগ ভার্সন নিন
+            const currentVersion = urlVersion || CONFIG.version;
             
-            // গুরুত্বপূর্ণ: এখানে শুধু 'v' প্যারামিটার ব্যবহার করা হয়েছে।
-            // এটি নিশ্চিত করে যে আপনার Global Version Caching সিস্টেম কাজ করবে।
-            // ভার্সন না বদলালে URL একই থাকবে এবং ক্যাশ থেকে লোড হবে।
+            // ক্যাশ বাস্টার URL (শুধুমাত্র ভার্সন ব্যবহার করা হচ্ছে)
             const cacheBusterUrl = `${CONFIG.deploymentUrl}?v=${currentVersion}`;
-            
             iframe.src = cacheBusterUrl;
         }
 
         iframe.onload = function() {
-            // লোডারটি সুন্দরভাবে হাইড করা
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => {
@@ -223,7 +227,6 @@
             }, 300); 
         };
 
-        // অ্যাপ চালু করা
         loadApp();
     </script>
 </body>
