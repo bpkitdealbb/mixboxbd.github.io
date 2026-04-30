@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- ============================================================
-         CACHING প্রতিরোধের জন্য মেটা ট্যাগ (Wrapper HTML এর জন্য)
-         ============================================================ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mixboxbd.github.io/">
+    <meta property="og:title" content="MIX BOX - সেরা অনলাইন শপিং অভিজ্ঞতা">
+    <meta property="og:description" content="বাংলাদেশের অন্যতম সেরা অনলাইন শপিং মল। সাশ্রয়ী মূল্যে সেরা মানের পণ্য সরাসরি অর্ডার করুন আমাদের ওয়েবসাইট থেকে।">
+    <meta property="og:image" content="https://i.postimg.cc/8zKG1ndp/20260113-210931.png"> <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <!-- পেজ টাইটেল এবং SEO মেটা ট্যাগ -->
     <title>MIX BOX - সেরা অনলাইন শপিং অভিজ্ঞতা</title>
     <meta name="description" content="MIX BOX - বাংলাদেশের অন্যতম সেরা অনলাইন শপিং মল। সাশ্রয়ী মূল্যে সেরা মানের পণ্য।">
     <meta name="keywords" content="MIX BOX, মিক্স বক্স, অনলাইন শপিং, ই-কমার্স">
     
-    <!-- PWA এবং অ্যাপ আইকন সেটআপ-->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -38,7 +40,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* আইফ্রেম স্টাইল */
         iframe { 
             width: 100%; 
             height: 100%; 
@@ -47,7 +48,6 @@
             background-color: #ffffff;
         }
 
-        /* লোডার কন্টেইনার */
         #loader-container {
             position: fixed;
             top: 0;
@@ -63,7 +63,6 @@
             transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
         }
 
-        /* লোগো অ্যানিমেশন */
         .brand-logo {
             width: 100px;
             height: auto;
@@ -77,7 +76,6 @@
             100% { transform: scale(1); opacity: 0.85; }
         }
 
-        /* লোডিং ডটস এনিমেশন */
         .loading-dots {
             display: flex;
             justify-content: center;
@@ -97,17 +95,10 @@
         .dot:nth-child(2) { animation-delay: -0.16s; }
 
         @keyframes bounce-scale {
-            0%, 80%, 100% { 
-                transform: scale(0); 
-                opacity: 0.5;
-            } 
-            40% { 
-                transform: scale(1); 
-                opacity: 1;
-            } 
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 
+            40% { transform: scale(1); opacity: 1; } 
         }
 
-        /* SEO Hidden Text */
         .seo-hidden-text {
             position: absolute;
             width: 1px;
@@ -122,7 +113,6 @@
 </head>
 <body>
 
-    <!-- লোডার সেকশন -->
     <div id="loader-container">
         <img id="loader-logo" src="" alt="Logo" class="brand-logo">
         <div class="loading-dots">
@@ -132,29 +122,23 @@
         </div>
     </div>
 
-    <!-- আইফ্রেম -->
     <iframe 
         id="shopFrame"
         allow="camera; microphone; geolocation; payment"
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals">
     </iframe>
 
-    <!-- SEO Hidden Text -->
     <div class="seo-hidden-text">
         <h1>MIX BOX (মিক্স বক্স) - বিশ্বস্ত ই-কমার্স ওয়েবসাইট</h1>
         <p>MIX BOX-এ আপনাকে স্বাগত! এটি বাংলাদেশের অন্যতম জনপ্রিয় একটি অনলাইন শপ।</p>
     </div>
 
     <script>
-        // ============================================================
-        // কনফিগারেশন সেকশন
-        // ============================================================
         const CONFIG = {
-            // নতুন ডিপ্লয় করলে ভার্সন বাড়াবেন (যেমন: 2.3)
-            deploymentUrl: "https://script.google.com/macros/s/AKfycbzHC5d358QiZ_SLaLQycrBI6N2E-TctYKykOK3pTwU3S2hfRgrkFF4AIWZSdn_vGAHv/exec",
+            deploymentUrl: "https://script.google.com/macros/s/AKfycbzCm0r1T2F4D3wyjIFK2GHjG0OQ3XBAqkHKNr_zm9J1t4r1lwJg8R7_G4idpKdVO6TV/exec",
             logoUrl: "https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2",
             appName: "MIX BOX",
-            version: "2.3" 
+            version: "2.2" 
         };
 
         document.title = CONFIG.appName;
@@ -165,31 +149,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         const urlVersion = urlParams.get('v');
 
-        // ============================================================
-        // স্মার্ট ভার্সন চেক এবং লিংক ক্লিনিং লজিক
-        // ============================================================
-        
-        // ১. আগের সেভ করা ভার্সন চেক করা (LocalStorage থেকে)
         const savedVersion = localStorage.getItem('mixbox_version');
         const needsUpdate = (savedVersion !== CONFIG.version);
 
-        // ২. যদি আপডেট প্রয়োজন হয় এবং বর্তমানে ভার্সন প্যারামিটার না থাকে
         if (needsUpdate && !urlVersion) {
-            // তবে একবার রিডাইরেক্ট করে নতুন ক্যাশ লোড করতে হবে
             window.location.replace(window.location.origin + window.location.pathname + '?v=' + CONFIG.version);
-        }
-        // ৩. যদি ইতিমধ্যে ভার্সন প্যারামিটার থাকে (রিডাইরেক্ট হয়েছে)
-        else if (urlVersion) {
-            // লোকাল স্টোরেজে নতুন ভার্সন সেভ করুন
+        } else if (urlVersion) {
             localStorage.setItem('mixbox_version', CONFIG.version);
-            
-            // ব্যবহারকারীর চোখের আড়ালে লিংকটি পরিষ্কার করে ফেলুন (?v=2.2 রিমুভ করুন)
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // ============================================================
-        // Service Worker লজিক
-        // ============================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
                 .then(reg => {
@@ -197,7 +166,6 @@
                         const newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // নতুন SW এলে সাথে সাথে রিফ্রেশ
                                 window.location.reload();
                             }
                         });
@@ -206,14 +174,8 @@
                 .catch(err => console.log('SW Registration Failed', err));
         }
 
-        // ============================================================
-        // আইফ্রেম লোড ফাংশন
-        // ============================================================
         function loadApp() {
-            // ইউআরএল থেকে ভার্সন নিন, না থাকলে কনফিগ ভার্সন নিন
             const currentVersion = urlVersion || CONFIG.version;
-            
-            // ক্যাশ বাস্টার URL (শুধুমাত্র ভার্সন ব্যবহার করা হচ্ছে)
             const cacheBusterUrl = `${CONFIG.deploymentUrl}?v=${currentVersion}`;
             iframe.src = cacheBusterUrl;
         }
