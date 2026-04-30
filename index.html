@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- পেজ টাইটেল এবং SEO মেটা ট্যাগ -->
+    <!-- ==========================================
+         CACHING প্রতিরোধের জন্য মেটা ট্যাগ
+         এটি শুধুমাত্র index.html ফাইলটিকে নতুন রাখবে, আইফ্রেমের ক্যাশ ডিলিট করবে না।
+         ========================================== -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>MIX BOX - সেরা অনলাইন শপিং অভিজ্ঞতা</title>
-    <meta name="description" content="MIX BOX - বাংলাদেশের অন্যতম সেরা অনলাইন শপিং মল। সাশ্রয়ী মূল্যে সেরা মানের পণ্য, দ্রুত ডেলিভারি এবং সহজ কেনাকাটার অভিজ্ঞতা।">
-    <meta name="keywords" content="MIX BOX, মিক্স বক্স, অনলাইন শপিং, ই-কমার্স, বাংলাদেশ, শপিং মল, সেরা পণ্য, কম দাম">
+    <meta name="description" content="MIX BOX - বাংলাদেশের অন্যতম সেরা অনলাইন শপিং মল।">
+    <meta name="keywords" content="MIX BOX, মিক্স বক্স, অনলাইন শপিং, ই-কমার্স">
     
     <!-- PWA এবং অ্যাপ আইকন সেটআপ -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -31,7 +38,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* আইফ্রেম স্টাইল */
         iframe { 
             width: 100%; 
             height: 100%; 
@@ -40,7 +46,6 @@
             background-color: #ffffff;
         }
 
-        /* লোডার কন্টেইনার */
         #loader-container {
             position: fixed;
             top: 0;
@@ -56,9 +61,8 @@
             transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
         }
 
-        /* লোগো অ্যানিমেশন - নরম এবং মার্জিত */
         .brand-logo {
-            width: 100px; /* সাইজ একটু ছোট করা হয়েছে প্রোফেশনাল লুকের জন্য */
+            width: 100px;
             height: auto;
             margin-bottom: 40px;
             animation: soft-pulse 2.5s infinite ease-in-out;
@@ -70,41 +74,35 @@
             100% { transform: scale(1); opacity: 0.85; }
         }
 
-        /* ==========================================
-           নতুন প্রফেশনাল ডটস এনিমেশন (টেক্সট ছাড়া)
-           ========================================== */
         .loading-dots {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px; /* বিন্দুর মাঝে দূরত্ব */
+            gap: 10px;
         }
 
         .dot {
             width: 14px;
             height: 14px;
-            background-color: #ff0055; /* আপনার ব্র্যান্ড কালার (Pink) */
+            background-color: #ff0055;
             border-radius: 50%;
             animation: bounce-scale 1.4s infinite ease-in-out both;
         }
 
-        /* দ্বিতীয় এবং তৃতীয় বিন্দুর জন্য ডিলে */
         .dot:nth-child(1) { animation-delay: -0.32s; }
         .dot:nth-child(2) { animation-delay: -0.16s; }
 
         @keyframes bounce-scale {
             0%, 80%, 100% { 
-                transform: scale(0); /* ছোট হয়ে যাওয়া */
+                transform: scale(0); 
                 opacity: 0.5;
             } 
             40% { 
-                transform: scale(1); /* বড় হওয়া */
+                transform: scale(1); 
                 opacity: 1;
             } 
         }
-        /* ========================================== */
 
-        /* SEO Hidden Text Style */
         .seo-hidden-text {
             position: absolute;
             width: 1px;
@@ -119,11 +117,8 @@
 </head>
 <body>
 
-    <!-- লোডার সেকশন -->
     <div id="loader-container">
         <img id="loader-logo" src="" alt="Logo" class="brand-logo">
-        
-        <!-- প্রফেশনাল এনিমেশন (টেক্সট ছাড়া) -->
         <div class="loading-dots">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -131,22 +126,15 @@
         </div>
     </div>
 
-    <!-- আইফ্রেম -->
     <iframe 
         id="shopFrame"
         allow="camera; microphone; geolocation; payment"
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals">
     </iframe>
 
-    <!-- SEO Hidden Text -->
     <div class="seo-hidden-text">
         <h1>MIX BOX (মিক্স বক্স) - বিশ্বস্ত ই-কমার্স ওয়েবসাইট</h1>
-        <p>MIX BOX-এ আপনাকে স্বাগত! এটি বাংলাদেশের অন্যতম জনপ্রিয় একটি অনলাইন শপ।</p>
-        <h2>আমাদের ক্যাটাগরি এবং কেনাকাটা</h2>
-        <ul>
-            <li>সেরা মানের পণ্যের নিশ্চয়তা।</li>
-            <li>দ্রুত ডেলিভারি এবং নিরাপদ পেমেন্ট।</li>
-        </ul>
+        <p>MIX BOX-এ আপনাকে স্বাগত!</p>
     </div>
 
     <script>
@@ -154,10 +142,12 @@
         // কনফিগারেশন সেকশন
         // ============================================================
         const CONFIG = {
-            deploymentUrl: "https://script.google.com/macros/s/AKfycbzCm0r1T2F4D3wyjIFK2GHjG0OQ3XBAqkHKNr_zm9J1t4r1lwJg8R7_G4idpKdVO6TV/exec",
+            deploymentUrl: "https://script.google.com/macros/s/AKfycbzHC5d358QiZ_SLaLQycrBI6N2E-TctYKykOK3pTwU3S2hfRgrkFF4AIWZSdn_vGAHv/exec",
             logoUrl: "https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2",
             appName: "MIX BOX",
-            version: "2.1"
+            // নতুন ডিপ্লয় করার সময় এই ভার্সন পরিবর্তন করবেন (যেমন: 2.2 থেকে 2.3)
+            // এটি না পরিবর্তন করলে ব্রাউজার পুরোনো ভার্সন ক্যাশ থেকে দেখাবে (স্পিড বাড়ানোর জন্য)
+            version: "1.1" 
         };
 
         // ============================================================
@@ -170,12 +160,14 @@
         const loader = document.getElementById('loader-container');
 
         function loadApp() {
-            const cacheBusterUrl = `${CONFIG.deploymentUrl}?v=${CONFIG.version}&t=${Date.now()}`;
+            // গুরুত্বপূর্ণ: এখানে Date.now() ব্যবহার করা হয়নি।
+            // শুধুমাত্র 'version' প্যারামিটার ব্যবহার করা হয়েছে।
+            // ফলে: v=2.2 থাকলে ক্যাশ থাকবে, v=2.3 করলে নতুন লোড হবে।
+            const cacheBusterUrl = `${CONFIG.deploymentUrl}?v=${CONFIG.version}`;
             iframe.src = cacheBusterUrl;
         }
 
         iframe.onload = function() {
-            // এনিমেশনটি সুন্দরভাবে শেষ হওয়ার জন্য একটু ডিলে
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => {
@@ -186,6 +178,7 @@
 
         loadApp();
 
+        // Service Worker Setup
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
