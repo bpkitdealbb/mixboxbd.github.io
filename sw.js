@@ -3,7 +3,7 @@ const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  'https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2'
+  'https://i.postimg.cc/GhX0s2PV/20260506-102726.png?v=2'
 ];
 
 // ইনস্টল এবং অ্যাক্টিভেট
