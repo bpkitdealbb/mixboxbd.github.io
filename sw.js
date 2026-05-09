@@ -3,7 +3,7 @@ const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-    'https://i.postimg.cc/8zKG1ndp/20260113-210931.png?v=2'
+    'https://res.cloudinary.com/dkowkawiq/image/upload/v1778256089/Visit_us_mixboxbd._github.io_20260508_215908_0000_x2xhms.png?v=2'
 ];
 
 // ইনস্টল এবং অ্যাক্টিভেট
