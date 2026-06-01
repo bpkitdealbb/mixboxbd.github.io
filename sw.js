@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mix-box-v1.4'; // ভার্সন আপডেট করেছি
+const CACHE_NAME = 'mix-box-v1.5'; // ভার্সন আপডেট করেছি
 const urlsToCache = [
   './',
   './index.html',
