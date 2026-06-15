@@ -1,52 +1,47 @@
-const CACHE_NAME = 'mix-box-v1.5'; // ভার্সন আপডেট করেছি
-const urlsToCache = [
+const CACHE_NAME = 'MixBoxbd-v5'; // ভার্সন চেঞ্জ করেছি (v1 থেকে v2)
+
+const ASSETS = [
   './',
   './index.html',
   './manifest.json'
-  // 'https://res.cloudinary.com/...' এই লিংকটি সরানো হয়েছে কারণ এটি মূল পেজে নেই এবং অপ্রয়োজনীয়
 ];
 
-self.addEventListener('install', event => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .catch(err => console.log('Cache install failed', err))
-  );
-});
+// ১. ইন্সটল ইভেন্ট
+self.addEventListener('install', (e) => {
+  // নতুন সার্ভিস ওয়ার্কার ডাউনলোড হলে সাথে সাথে অ্যাক্টিভ হবে (waiting থাকবে না)
+  self.skipWaiting(); 
 
-self.addEventListener('activate', event => {
-  self.clients.claim();
-  event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      if (response) {
-        fetch(event.request).then(networkResponse => {
-            caches.open(CACHE_NAME).then(cache => {
-                cache.put(event.request, networkResponse.clone());
-            });
-        }).catch(() => {});
-        return response;
-      }
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      });
+// ২. অ্যাক্টিভেট ইভেন্ট (নতুন ভার্সন আসলে পুরনো ক্যাশ ডিলিট হবে)
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          // যদি ক্যাশের নাম বর্তমান ভার্সনের সাথে ম্যাচ না করে, তবে সেটি ডিলিট করুন
+          if (cache !== CACHE_NAME) {
+            console.log('Deleting old cache:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  // সব ক্লায়েন্টকে (ট্যাব) নিয়ন্ত্রণ করবে
+  return self.clients.claim();
+});
+
+// ৩. ফেচ ইভেন্ট (ক্যাশ থেকে লোড করবে, না থাকলে সার্ভার থেকে)
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((cachedResponse) => {
+      return cachedResponse || fetch(e.request);
     })
   );
 });
