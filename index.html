@@ -1654,9 +1654,7 @@ function instantScrollFix() {
                                         document.getElementById('app').classList.remove('hidden');
                                         document.getElementById('app').classList.add('flex');
                                         
-                                        // Clean URL সাপোর্ট করার জন্য Pathname ব্যবহার করা হচ্ছে
-const path = window.location.pathname.substring(1) + window.location.search;
-loadRoute(path || 'home');
+                                        loadRoute(window.location.hash || '#home');
                                         updateCartBadge();
                                         updateOrderSummary();
                                         updateUIText();
@@ -1665,9 +1663,7 @@ loadRoute(path || 'home');
                                         initPopupSystem();
                                     } else {
                                         // ব্যাকগ্রাউন্ডে ডাটা আপডেট হলে পেজ রিলোড না করেই UI আপডেট করে দেওয়া
-                                        // Clean URL সাপোর্ট করার জন্য Pathname ব্যবহার করা হচ্ছে
-const path = window.location.pathname.substring(1) + window.location.search;
-loadRoute(path || 'home');
+                                        loadRoute(window.location.hash || '#home');
                                         updateCartBadge();
                                         updateOrderSummary();
                                         updateUIText();
@@ -1835,19 +1831,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ================= ROUTING =================
 function setupEventListeners() {
-    // ==========================================
-    // FIX: POPSTATE EVENT LISTENER (History API)
-    // ==========================================
-    // হ্যাশ চেঞ্জ ইভেন্ট রিমুভ করে পপস্টেট ইভেন্ট ব্যবহার করা হচ্ছে
-    window.addEventListener('popstate', (event) => {
-        // ব্যাক বাটনে ক্লিক করলে এই ইভেন্ট ফায়ার হবে
-        // বর্তমান URL থেকে পাথ এবং কুয়েরি নিয়ে লোড করা হবে
-        const currentPath = window.location.pathname.substring(1);
-        const currentQuery = window.location.search;
-        loadRoute(currentPath + currentQuery);
-    });
-    // ==========================================
-
+    window.addEventListener('hashchange', () => loadRoute(window.location.hash));
     const searchInput = document.getElementById('searchInput');
     
     if(searchInput) {
@@ -1876,6 +1860,7 @@ function setupEventListeners() {
             }, 300);
         }); 
         
+        // Enter চাপলে ফর্ম সাবমিট বন্ধ করতে
         searchInput.addEventListener('keydown', (e) => {
             if(e.key === 'Enter') {
                 e.preventDefault();
@@ -1898,126 +1883,123 @@ function navigateTo(route) {
     }
     
     // ==========================================
-    // ২. হ্যাশ স্ট্রিপ করা এবং প্রসেস করা
+    // ২. নেভিগেশন রিলোড লজিক (এখানেই ফিক্স করা হয়েছে)
     // ==========================================
-    // যদি রুটে # থাকে, তবে তা সরিয়ে ফেলা হবে
-    const cleanRoute = route.startsWith('#') ? route.substring(1) : route;
-    
-    // যদি রুটে কোনো query string না থাকে (যেমন home), তবে / যোগ করা হবে
-    const path = cleanRoute.includes('?') ? cleanRoute : (cleanRoute || '/');
-    
-    // প্যারামিটার আলাদা করা
-    const [pathname, queryString] = cleanRoute.replace('?', '&').split('&').reduce((acc, part, index) => {
-        if (index === 0) acc.pathname = part || '/';
-        else if (part.includes('=')) acc.search += (acc.search ? '&' : '?') + part;
-        return acc;
-    }, { pathname: '/', search: '' });
+    const currentHash = window.location.hash || '#home';
+    const targetHash = route || '#home';
 
-    const fullPath = pathname + queryString;
-
-    // ==========================================
-    // ৩. হিস্ট্রি স্টেট আপডেট করা (Clean URL)
-    // ==========================================
-    // বর্তমান ইউআরএলের সাথে তুলনা করে পুশ করা হবে
-    if (window.location.pathname + window.location.search !== fullPath) {
-        history.pushState({ path: fullPath }, '', fullPath);
-    }
-
-    // ==========================================
-    // ৪. রাউট লোড করা
-    // ==========================================
-    loadRoute(cleanRoute);
-}
-
-function loadRoute(pathWithQuery) {
-    // ==========================================
-    // FIX: IMMEDIATE SCROLL RESET
-    // ==========================================
-    window.scrollTo(0, 0);
-    // ==========================================
-    
-    instantScrollFix();
-    
-    // ==========================================
-    // ১. পাথ এবং কুয়েরি স্ট্রিং পার্স করা (Hash ছাড়া)
-    // ==========================================
-    let route = '';
-    let queryString = '';
-    
-    if (pathWithQuery && typeof pathWithQuery === 'string') {
-        // যদি ফাংশন কল করার সময় সরাসরি পাথ আসে (navigateTo থেকে)
-        const parts = pathWithQuery.split('?');
-        route = parts[0] || '';
-        queryString = parts[1] || '';
-    } else {
-        // যদি ফাংশন কল না করে সরাসরি ব্রাউজারের ইউআরএল থেকে আসে (Reload বা Back Button)
-        route = window.location.pathname.substring(1); // প্রথমের '/' সরানো
-        queryString = window.location.search.substring(1); // প্রথমের '?' সরানো
-    }
-
-    const params = new URLSearchParams(queryString);
-    const content = document.getElementById('content');
-    
-    // ==========================================================
-    // FIX FOR SLOW NAVIGATION: UPDATE UI FIRST
-    // ==========================================================
-    updateNavActive(route);
-    // ==========================================================
-
-    content.innerHTML = '';
-    stopSlider();
-
-    // ==========================================
-    // OPTIMIZED: ONLY CHECK SESSIONSTORAGE IF HOME
-    // ==========================================
-    if (route === 'home' || route === '') {
-        try {
-            const storedPage = sessionStorage.getItem('homePageNum');
-            if (storedPage && parseInt(storedPage) > 1) {
-                appData.allProductsCurrentPage = parseInt(storedPage);
-            }
-        } catch (e) {
-            console.warn("SessionStorage read failed:", e);
+    if (currentHash === targetHash) {
+        // Trigger Flash Effect
+        const app = document.getElementById('app');
+        if(app) {
+            app.classList.remove('flash-active');
+            void app.offsetWidth; // trigger reflow
+            app.classList.add('flash-active');
         }
         
-        if (appData.forceHomeReset) {
-            appData.allProductsCurrentPage = 1;
-            appData.forceHomeReset = false;
+        // ==========================================
+        // ফিক্স: যদি ইউজার আগে থেকেই Home-এ থাকে (যেমন পেজ ২ বা ৩)
+        // এবং আবার Home বাটনে ক্লিক করে, তবে পেজ ১-এ নিয়ে আসুন।
+        // ==========================================
+        if (targetHash === '#home') {
+            appData.allProductsCurrentPage = 1; // পেজ নাম্বার ১ সেট করা
+            appData.forceHomeReset = true;      // রিসেট ফ্ল্যাগ অন করা
             try {
-                sessionStorage.setItem('homePageNum', 1);
+                sessionStorage.setItem('homePageNum', 1); // স্টোরেজ রিসেট করা
             } catch (e) {
                 console.warn("SessionStorage write failed:", e);
             }
+            window.scrollTo(0, 0); // স্ক্রল উপরে নিয়ে আসা
         }
-    }
-    // ==========================================
-    
-    appData.currentSelectedVariant = null;
+        // ==========================================
 
-    // ==========================================
-    // ২. ROUTING SWITCH (Hash sign '#' বাদ দিয়ে)
-    // ==========================================
-    switch (route) {
-        case '': loadHomePage(); break;
-        case 'home': loadHomePage(); break;
-        case 'categories': loadCategoriesPage(); break;
-        case 'category': loadCategoryProducts(params.get('name')); break;
-        case 'product': loadProductDetails(params.get('id')); break;
-        case 'cart': loadCartPage(); break;
-        case 'checkout': loadCheckoutPage(); break;
-        case 'account': loadAccountPage(); break;
-        case 'my-orders': loadMyOrdersPage(); break; 
-        case 'login': loadTemplate('loginTemplate'); break;
-        case 'register': loadTemplate('registerTemplate'); break;
-        case 'forgot-password': loadTemplate('forgotPasswordTemplate'); break;
-        case 'messages': loadMessagesPage(); break;
-        default: loadHomePage();
+        // রুট আবার লোড করা
+        loadRoute(targetHash);
+        return; // এখানেই স্টপ করবে, হ্যাশ চেঞ্জ করবে না
     }
-    
-    // ==========================================================
-    // নোট: Redundant updateUIText call রিমুভ করা হয়েছে (পুরাতন কোডেও ছিল)
-    // ==========================================================
+    // ==========================================
+
+    // নরমাল নেভিগেশন (অন্য পেজে যাওয়া)
+    window.location.hash = route;
 }
+
+        function loadRoute(hash) {
+            // ==========================================
+    // FIX: IMMEDIATE SCROLL RESET
+    // ==========================================
+    // রাউট পরিবর্তন হলেই জোর করে উপরে নিয়ে আসা হচ্ছে।
+    // এটি ব্যাকগ্রাউন্ডে স্ক্রল করা পুরনো পেজের ভিউ হাইড করে দেয়।
+    window.scrollTo(0, 0);
+    // ==========================================
+            instantScrollFix();
+            const [route, queryString] = hash.replace('#', '').split('?');
+            const params = new URLSearchParams(queryString);
+            const content = document.getElementById('content');
+            
+            // ==========================================================
+            // FIX FOR SLOW NAVIGATION: UPDATE UI FIRST
+            // ==========================================================
+            // বাটনের কালার পরিবর্তন দ্রুত দেখানোর জন্য 
+            // DOM ক্লিয়ার আগেই updateNavActive কল করা হচ্ছে।
+            // এতে ব্যবহারকারী তাৎক্ষণেই ফিডব্যাক পাবেন।
+            updateNavActive(route);
+            // ==========================================================
+
+            content.innerHTML = '';
+            stopSlider();
+
+            // ==========================================
+            // OPTIMIZED: ONLY CHECK SESSIONSTORAGE IF HOME
+            // ==========================================
+            // স্পিড বাড়াতে আমরা শুধুমাত্র হোম পেজে লোড করার সময় SessionStorage চেক করব।
+            if (route === 'home' || route === '') {
+                try {
+                    const storedPage = sessionStorage.getItem('homePageNum');
+                    if (storedPage && parseInt(storedPage) > 1) {
+                        appData.allProductsCurrentPage = parseInt(storedPage);
+                    }
+                } catch (e) {
+                    console.warn("SessionStorage read failed:", e);
+                }
+                
+                // Check Force Reset
+                if (appData.forceHomeReset) {
+                    appData.allProductsCurrentPage = 1;
+                    appData.forceHomeReset = false;
+                    try {
+                        sessionStorage.setItem('homePageNum', 1);
+                    } catch (e) {
+                        console.warn("SessionStorage write failed:", e);
+                    }
+                }
+            }
+            // ==========================================
+            
+            appData.currentSelectedVariant = null; // Reset variant selection on nav
+
+            switch (route) {
+                case '': loadHomePage(); break;
+                case 'home': loadHomePage(); break;
+                case 'categories': loadCategoriesPage(); break;
+                case 'category': loadCategoryProducts(params.get('name')); break;
+                case 'product': loadProductDetails(params.get('id')); break;
+                case 'cart': loadCartPage(); break;
+                case 'checkout': loadCheckoutPage(); break;
+                case 'account': loadAccountPage(); break;
+                case 'my-orders': loadMyOrdersPage(); break; 
+                case 'login': loadTemplate('loginTemplate'); break;
+                case 'register': loadTemplate('registerTemplate'); break;
+                case 'forgot-password': loadTemplate('forgotPasswordTemplate'); break;
+                case 'messages': loadMessagesPage(); break;
+                default: loadHomePage();
+            }
+            
+            // ==========================================================
+            // REMOVED: Redundant updateUIText call from end of loadRoute
+            // This was causing slowness on Home page because updateUIText
+            // iterates over DOM elements. Specific page loaders handle it.
+            // ==========================================================
+        }
 
         function updateNavActive(route) {
             document.querySelectorAll('nav button').forEach(btn => {
