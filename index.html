@@ -4639,7 +4639,7 @@ function placeOrder() {
         userEmail: appData.user.email
     };
 
-    Swal.fire({ title: t('processing'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: t('processing'), didOpen: () => Swal.showLoading() });
     
     google.script.run.withSuccessHandler(res => {
         Swal.close(); // লোডিং বন্ধ করা
@@ -4660,25 +4660,38 @@ function placeOrder() {
         // ===========================================
 
         if (res.success) {
+            // ==========================================
+            // FIX: RACE CONDITION GUARD
+            // যদি রিসপন্স আসার আগেই ইউজার লগআউট হয়ে যায়, 
+            // তাহলে এই ব্লককে এক্সিকিউট না করে লগইন পেজে পাঠিয়ে দেওয়া হবে।
+            // ==========================================
+            if (!appData.user) {
+                Swal.fire({
+                    icon: 'success',
+                    title: t('order_placed'),
+                    text: `Order ID: ${res.orderId}. ${t('please_login')} to view orders.`,
+                    confirmButtonText: t('login'),
+                    confirmButtonColor: appData.settings.themecolor || '#2563eb'
+                }).then(() => navigateTo('#login'));
+                return; // ফাংশন এখানেই থেমে যাবে, নিচের null এরর হবে না
+            }
+            // ==========================================
+
             // === FACEBOOK PIXEL EVENT (Purchase) ===
             fbq('track', 'Purchase', {
                 value: totalOrderValue, 
                 currency: 'BDT'
-            }, { eventID: res.orderId }); // এখানে eventID হিসেবে orderId পাস করুন
+            }, { eventID: res.orderId }); 
             // ============================================
 
             // কার্ট এবং অন্যান্য স্টেট ক্লিয়ার করা
-                        appData.cart = appData.cart.filter(item => item.selected === false);
+            appData.cart = appData.cart.filter(item => item.selected === false);
             allOrdersCache = []; 
             appData.coupon = null;
             appData.pointsDiscount = 0;
+            appData.user.currentpoints -= res.pointsUsed;
             
-            // সুরক্ষা: ইউজার যদি ইতিমধ্যে লগআউট করে থাকে, তবে পয়েন্ট আপডেট করবে না
-            if (appData.user) {
-                appData.user.currentpoints -= res.pointsUsed;
-                localStorage.setItem('user', JSON.stringify(appData.user));
-            }
-            
+            localStorage.setItem('user', JSON.stringify(appData.user));
             localStorage.setItem('cart', JSON.stringify(appData.cart));
             localStorage.removeItem('coupon');
             
