@@ -1156,25 +1156,23 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
 
                             return function(...args) {
                                 // Vercel থেকে Apps Script-এ ডাটা পাঠানোর জন্য Fetch API
-                                fetch(GAS_WEB_APP_URL, {
-                                    method: 'POST',
-                                    mode: 'cors',
-                                    headers: {
-                                        'Content-Type': 'text/plain;charset=utf-8'
-                                    },
-                                    body: JSON.stringify({
-                                        functionName: prop,
-                                        arguments: args
-                                    })
-                                })
-                                .then(response => response.json())
-                                .then(res => {
-                                    if (res && res.success === false && res.error) {
-                                        failureHandler(res.error);
-                                    } else {
-                                        successHandler(res);
-                                    }
-                                })
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify({
+                        functionName: prop,
+                        arguments: args
+                    })
+                })
+                .then(response => response.json())
+                .then(res => {
+                    // ✅ শুধুমাত্র successHandler-এ পাঠিয়ে দিন। 
+                    // এখন থেকে সব ডাটা সঠিক জায়গায় যাবে।
+                    successHandler(res);
+                })
                                 .catch(err => {
                                     failureHandler(err.message || err);
                                 });
@@ -1728,27 +1726,11 @@ function instantScrollFix() {
         // ==========================================
         // GLOBAL ERROR HANDLER
         // ==========================================
-function handleAppError(err) {
-    console.error(err);
-    Swal.close();
-    
-    let errorMsg = 'Something went wrong. Please try again.';
-    
-    // পলিফিল থেকে যদি স্ট্রিং আসে (যেমন JSON parse error)
-    if (typeof err === 'string') {
-        if (err.includes('Unexpected token') || err.includes('Failed to fetch')) {
-            errorMsg = 'Server is busy or network error. Please wait a moment and try again.';
-        } else {
-            errorMsg = err; // ব্যাকএন্ড থেকে আসা আসল এরর মেসেজ দেখাবে
+        function handleAppError(err) {
+            console.error(err);
+            Swal.close();
+            Swal.fire('Error', err.message || 'Something went wrong', 'error');
         }
-    } 
-    // সাধারণ জাভাস্ক্রিপ্ট এরর অবজেক্ট হলে
-    else if (err && err.message) {
-        errorMsg = err.message;
-    }
-    
-    Swal.fire('Error', errorMsg, 'error');
-}
 
         // ==========================================
         // REQUIREMENT: EMAIL VALIDATION FUNCTION
