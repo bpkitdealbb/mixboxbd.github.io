@@ -889,7 +889,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
             </p>
         </div>
     </div>
-
+  </div>
                 <button type="button" onclick="placeOrder()" class="w-full bg-primary text-white py-3.5 rounded-xl font-bold text-lg hover:opacity-90 shadow-xl shadow-primary/20" data-i18n="confirm_order">Confirm Order</button>
             </form>
         </div>
@@ -1131,66 +1131,62 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby56ETMbv5TkKq9joDhqj6KwWkC35r_b5YKWD697xoO119_UPr_tjQsNCbNn1YA6zOK/exec"; 
 
     if (typeof google === 'undefined' || !google.script) {
-    window.google = {
-        script: {
-            run: (() => {
-                let successHandler = (res) => console.log("Success:", res);
-                let failureHandler = (err) => console.error("Failure:", err);
+        window.google = {
+            script: {
+                run: (() => {
+                    let successHandler = (res) => console.log("Success:", res);
+                    let failureHandler = (err) => console.error("Failure:", err);
 
-                const handlerChain = {
-                    withSuccessHandler: function(callback) {
-                        successHandler = callback;
-                        return this;
-                    },
-                    withFailureHandler: function(callback) {
-                        failureHandler = callback;
-                        return this;
-                    }
-                };
-
-                return new Proxy(handlerChain, {
-                    get: function(target, prop) {
-                        if (prop in target) {
-                            return target[prop];
+                    const handlerChain = {
+                        withSuccessHandler: function(callback) {
+                            successHandler = callback;
+                            return this;
+                        },
+                        withFailureHandler: function(callback) {
+                            failureHandler = callback;
+                            return this;
                         }
+                    };
 
-                        return function(...args) {
-                            // ==========================================
-                            // ✅ ফিক্স: প্রতিটি কলের জন্য handler কপি করা হচ্ছে
-                            // এতে করে এক কলের handler অন্য কলকে প্রভাবিত করবে না
-                            // ==========================================
-                            const currentSuccess = successHandler;
-                            const currentFailure = failureHandler;
+                    return new Proxy(handlerChain, {
+                        get: function(target, prop) {
+                            if (prop in target) {
+                                return target[prop];
+                            }
 
-                            fetch(GAS_WEB_APP_URL, {
-                                method: 'POST',
-                                mode: 'cors',
-                                headers: {
-                                    'Content-Type': 'text/plain;charset=utf-8'
-                                },
-                                body: JSON.stringify({
-                                    functionName: prop,
-                                    arguments: args
+                            return function(...args) {
+                                // Vercel থেকে Apps Script-এ ডাটা পাঠানোর জন্য Fetch API
+                                fetch(GAS_WEB_APP_URL, {
+                                    method: 'POST',
+                                    mode: 'cors',
+                                    headers: {
+                                        'Content-Type': 'text/plain;charset=utf-8'
+                                    },
+                                    body: JSON.stringify({
+                                        functionName: prop,
+                                        arguments: args
+                                    })
                                 })
-                            })
-                            .then(response => response.json())
-                            .then(res => {
-                                if (res && res.success === false && res.error) {
-                                    currentFailure(res.error);
-                                } else {
-                                    currentSuccess(res);
-                                }
-                            })
-                            .catch(err => {
-                                currentFailure(err.message || err);
-                            });
-                        };
-                    }
-                });
-            })()
-        }
-    };
-}
+                                .then(response => response.json())
+                                .then(res => {
+                                    if (res && res.success === false && res.error) {
+                                        failureHandler(res.error);
+                                    } else {
+                                        successHandler(res);
+                                    }
+                                })
+                                .catch(err => {
+                                    failureHandler(err.message || err);
+                                });
+                            };
+                        }
+                    });
+                })()
+            }
+        };
+    }
+    
+    // আপনার বাকি সব জাভাস্ক্রিপ্ট কোড (যেমন: loadProducts, checkLogin ইত্যাদি) এর নিচ থেকে শুরু হবে...
 
 
         // ============================================================
@@ -4619,12 +4615,14 @@ function placeOrder() {
     if (selectedItems.length === 0) return Swal.fire('Error', 'Please select at least one item', 'error');
     if (!name || !phone || !district || !upazila || !address) return Swal.fire('Missing', t('fill_all'), 'error');
     
-    // ইউজার লগড ইন আছে কিনা ফ্রন্টএন্ড চেক
+    // ইউজার লগড ইন আছে কিনা চেক
     if (!appData.user) {
         return handleSessionError();
     }
 
     const usePoints = document.getElementById('ptsToggle').checked;
+
+    // === ফেসবুক পিক্সেলের জন্য মোট অর্ডার ভ্যালু ক্যালকুলেশন ===
     const totalOrderValue = selectedItems.reduce((sum, item) => sum + ((item.price) * (item.quantity || item.qty)), 0);
 
     const orderData = {
@@ -4643,30 +4641,33 @@ function placeOrder() {
 
     Swal.fire({ title: t('processing'), didOpen: () => Swal.showLoading() });
     
-    google.script.run
-        .withSuccessHandler(res => {
-            Swal.close();
-            
-            // === SUCCESS HANDLER: সেশন চেক ===
-            if (!res.success) {
-                const errorMsg = (res.error || '').toLowerCase();
-                
-                if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired') || errorMsg.includes('unauthorized') || errorMsg.includes('access')) {
-                    handleSessionError(); 
-                    return; 
-                }
-                else {
-                    Swal.fire('Failed', res.error, 'error'); 
-                }
-                return;
+    google.script.run.withSuccessHandler(res => {
+        Swal.close(); // লোডিং বন্ধ করা
+        
+        // === SESSION INVALID CHECK ===
+        if (!res.success) {
+            const errorMsg = (res.error || '').toLowerCase();
+            // যদি এরর মেসেজে এই শব্দগুলো থাকে তবে সেশন এরর ধরে নেবে
+            if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired')) {
+                handleSessionError(); 
+                return; 
             }
+            // অন্যান্য এরর থাকলে সাধারণ এরর দেখাবে
+            else {
+                Swal.fire('Failed', res.error, 'error'); 
+            }
+        }
+        // ===========================================
 
-            // === অর্ডার সফল ===
+        if (res.success) {
+            // === FACEBOOK PIXEL EVENT (Purchase) ===
             fbq('track', 'Purchase', {
                 value: totalOrderValue, 
                 currency: 'BDT'
-            }, { eventID: res.orderId });
+            }, { eventID: res.orderId }); // এখানে eventID হিসেবে orderId পাস করুন
+            // ============================================
 
+            // কার্ট এবং অন্যান্য স্টেট ক্লিয়ার করা
             appData.cart = appData.cart.filter(item => item.selected === false);
             allOrdersCache = []; 
             appData.coupon = null;
@@ -4677,6 +4678,7 @@ function placeOrder() {
             localStorage.setItem('cart', JSON.stringify(appData.cart));
             localStorage.removeItem('coupon');
             
+            // === SUCCESS MESSAGE ALERT (এখানেই মেসেজটি আসবে) ===
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -4687,35 +4689,19 @@ function placeOrder() {
                 updateCartBadge();
                 navigateTo('#home');
             });
-        })
-        // ==========================================
-        // ✅ এটাই মূল ফিক্স - FAILURE HANDLER-এ সেশন চেক
-        // ব্যাকএন্ড থেকে { success: false, error: 'Unauthorized...' } 
-        // আসলে Vercel polyfill এটিকে failureHandler-এ পাঠায়
-        // ==========================================
-        .withFailureHandler(err => {
-            Swal.close(); // লোডিং বন্ধ করা
-            
-            // err হতে পারে স্ট্রিং বা Error অবজেক্ট - দুটোই handle করা হচ্ছে
-            const errStr = String(err).toLowerCase();
-            
-            // ব্যাকএন্ড থেকে আসা এরর মেসেজে এই শব্দগুলো আছে কিনা চেক
-            if (
-                errStr.includes('session') || 
-                errStr.includes('token') || 
-                errStr.includes('unauthorized') || 
-                errStr.includes('expired') || 
-                errStr.includes('access') || 
-                errStr.includes('invalid') || 
-                errStr.includes('authentication')
-            ) {
-                handleSessionError();
-            } else {
-                // সাধারণ এরর
-                Swal.fire('Error', err.message || String(err), 'error');
-            }
-        })
-        .placeOrder(orderData);
+            // =================================================
+        } 
+// ✅ নতুন যা বসাবেন (এই ১১ লাইন বসান)
+    }).withFailureHandler(err => {
+        // === SESSION INVALID CHECK (FAILURE HANDLER) ===
+        const errStr = String(err).toLowerCase();
+        if (errStr.includes('session') || errStr.includes('token') || errStr.includes('unauthorized') || errStr.includes('expired') || errStr.includes('access')) {
+            handleSessionError();
+        } else {
+            Swal.fire('Error', err.message, 'error');
+        }
+        // ================================================
+    }).placeOrder(orderData);
 }
 
         // ==========================================
@@ -5431,7 +5417,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by MixBoxbd Team
+                        <br>Developed by safabd Team
                     </div>
                 </div>
             </footer>`;
@@ -6113,7 +6099,7 @@ async function trackCAPI(eventName, customData, productId) {
             clientUserAgent,
             fbc,
             fbp,
-            eventId,
+            productId,
             null // testEventCode
         ]
     };
