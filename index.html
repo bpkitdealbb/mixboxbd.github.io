@@ -4644,9 +4644,15 @@ function placeOrder() {
     google.script.run.withSuccessHandler(res => {
         Swal.close(); // লোডিং বন্ধ করা
         
-        // === SESSION INVALID CHECK ===
+    google.script.run
+    .withSuccessHandler(res => {
+        Swal.close(); // লোডিং বন্ধ করা
+        
+        // === SESSION INVALID CHECK (ROBUST VERSION LIKE MY ORDERS) ===
         if (!res.success) {
             const errorMsg = (res.error || '').toLowerCase();
+            console.log("Order Place Error:", errorMsg);
+            
             // যদি এরর মেসেজে এই শব্দগুলো থাকে তবে সেশন এরর ধরে নেবে
             if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired')) {
                 handleSessionError(); 
