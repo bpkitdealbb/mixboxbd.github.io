@@ -1728,11 +1728,27 @@ function instantScrollFix() {
         // ==========================================
         // GLOBAL ERROR HANDLER
         // ==========================================
-        function handleAppError(err) {
-            console.error(err);
-            Swal.close();
-            Swal.fire('Error', err.message || 'Something went wrong', 'error');
+function handleAppError(err) {
+    console.error(err);
+    Swal.close();
+    
+    let errorMsg = 'Something went wrong. Please try again.';
+    
+    // পলিফিল থেকে যদি স্ট্রিং আসে (যেমন JSON parse error)
+    if (typeof err === 'string') {
+        if (err.includes('Unexpected token') || err.includes('Failed to fetch')) {
+            errorMsg = 'Server is busy or network error. Please wait a moment and try again.';
+        } else {
+            errorMsg = err; // ব্যাকএন্ড থেকে আসা আসল এরর মেসেজ দেখাবে
         }
+    } 
+    // সাধারণ জাভাস্ক্রিপ্ট এরর অবজেক্ট হলে
+    else if (err && err.message) {
+        errorMsg = err.message;
+    }
+    
+    Swal.fire('Error', errorMsg, 'error');
+}
 
         // ==========================================
         // REQUIREMENT: EMAIL VALIDATION FUNCTION
@@ -3207,21 +3223,23 @@ function calculateCartTotal() {
 
                 if(res.success) {
                     toggle.checked = true;
-                    appData.pointsDiscount = res.discount;
-                    if(savingsLabel) savingsLabel.innerText = `Save ৳${res.discount.toFixed(2)}`;
                     
                     // ==========================================
-                    // SAVE TO CACHE (ক্যাশে সেভ করুন)
+                    // FIX: NaN PROTECTION ADDED HERE
                     // ==========================================
-                    cachedPointsResult = { discount: res.discount }; // ডিসকাউন্ট অ্যামাউন্ট সেভ রাখুন
-                    lastPointsCartHash = currentHash;               // হ্যাশ সেভ রাখুন
+                    const safeDiscount = Number(res.discount) || 0; 
+                    appData.pointsDiscount = safeDiscount;
+                    if(savingsLabel) savingsLabel.innerText = `Save ৳${safeDiscount.toFixed(2)}`;
                     // ==========================================
+
+                    // SAVE TO CACHE
+                    cachedPointsResult = { discount: safeDiscount }; 
+                    lastPointsCartHash = currentHash;
                     
                     updateOrderSummary();
                 } else {
-                    // ... existing error handling ...
-                    // Custom Dynamic Message Logic (আপনার আগের কোড)
-                    if (res.error.includes("Minimum order not met")) {
+                    // Custom Dynamic Message Logic
+                    if (res.error && res.error.includes("Minimum order not met")) {
                         const minAmount = appData.settings.minorderforpoints || 0;
                         const messageBn = `পয়েন্ট ডিসকাউন্ট ব্যবহার করতে হলে আপনাকে নূন্যতম ${minAmount} টাকার অর্ডার করতে হবে...`;
                         const messageEn = `To use points discount, you need to place a minimum order of ${minAmount} Taka...`;
@@ -3233,7 +3251,7 @@ function calculateCartTotal() {
                             confirmButtonColor: appData.settings.themecolor || '#2563eb'
                         });
                     } else {
-                        Swal.fire('Info', res.error, 'info');
+                        Swal.fire('Info', res.error || 'Cannot apply points right now.', 'info');
                     }
                 }
             })
@@ -5417,7 +5435,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by MixBoxbd Team
+                        <br>Developed by Boxbd Team
                     </div>
                 </div>
             </footer>`;
