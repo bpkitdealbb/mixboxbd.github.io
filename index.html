@@ -3964,47 +3964,13 @@ function buyNow(product, qty = 1) {
     navigateTo('#cart');
 }
 
-function proceedToCheckout() {
-    const selectedItems = appData.cart.filter(item => item.selected !== false);
-    if (selectedItems.length === 0) return Swal.fire('Empty', 'Please select items to checkout', 'warning');
-    
-    // ১. লোকালি ইউজার আছে কিনা চেক
-    if (!appData.user) {
-        return Swal.fire({ icon: 'warning', title: t('login_req'), text: t('login_to_continue'), confirmButtonText: t('login') }).then(() => navigateTo('#login'));
-    }
-
-    // ২. সার্ভারে সেশন ভ্যালিড আছে কিনা চেক (নতুন যোগ করা হচ্ছে)
-    Swal.fire({ title: t('validating'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-    google.script.run
-        .withSuccessHandler(res => {
-            Swal.close();
+        function proceedToCheckout() {
+            const selectedItems = appData.cart.filter(item => item.selected !== false);
+            if (selectedItems.length === 0) return Swal.fire('Empty', 'Please select items to checkout', 'warning');
             
-            // সার্ভার থেকে success: false এসেছে কিনা চেক
-            if (res && res.success === false) {
-                const errMsg = (res.error || '').toLowerCase();
-                if (errMsg.includes('session') || errMsg.includes('token') || errMsg.includes('expired') || errMsg.includes('invalid')) {
-                    handleSessionError();
-                    return;
-                }
-            }
-
-            // সব ঠিক থাকলে চেকআউট পেজে নিয়ে যাও
+            if (!appData.user) return Swal.fire({ icon: 'warning', title: t('login_req'), text: t('login_to_continue'), confirmButtonText: t('login') }).then(() => navigateTo('#login'));
             navigateTo('#checkout');
-        })
-        .withFailureHandler(err => {
-            Swal.close();
-            const errStr = String(err).toLowerCase();
-            if (errStr.includes('session') || errStr.includes('token') || errStr.includes('expired')) {
-                handleSessionError();
-            } else {
-                Swal.fire('Error', 'Could not verify session. Please try again.', 'error');
-            }
-        })
-        // ⚠️ গুরুত্বপূর্ণ নোট: নিচের 'validateSessionToken' হলো আপনার ব্যাকএন্ডের (Code.gs) ফাংশনের নাম। 
-        // আপনার ব্যাকএন্ডে যে নামে সেশন চেক করে, ঠিক সেই নামটি এখানে বসাবেন (যেমন: checkSession, verifyToken ইত্যাদি)
-        .validateSessionToken(appData.sessionToken, appData.user.email); 
-}
+        }
 <!-- পরের ভাগ (Part 3) এই লাইনের ঠিক নিচে পেস্ট করুন -->
 <!-- Part 3: Page Loaders, Generators, Footer & Closing Script -->
         // ================= PAGE LOADERS =================
@@ -4845,6 +4811,7 @@ function placeOrder() {
 // ==========================================
 // HELPER: HANDLE SESSION INVALID ERROR
 // ==========================================
+// ✅ নতুন যা বসাবেন
 function handleSessionError() {
     Swal.fire({
         icon: 'warning',
@@ -4852,13 +4819,22 @@ function handleSessionError() {
         text: 'আপনার সেশন মেয়াদ শেষ হয়ে গেছে। অর্ডার করতে অথবা অর্ডার দেখতে আবার লগইন করুন।',
         confirmButtonText: 'লগইন করুন',
         confirmButtonColor: appData.settings.themecolor || '#0ea5e9',
-        allowOutsideClick: false, // ইউজারকে জোর করে লগইন করতে বাধ্য করবে
+        allowOutsideClick: false,
         showCancelButton: false
     }).then((result) => {
         if (result.isConfirmed) {
-            // লোকাল স্টোরেজ ক্লিয়ার করা এবং লগইন পেজে নিয়ে যাওয়া
-            logout(); 
+            // ==========================================
+            // FIX: logout() কল করা হচ্ছে না
+            // কারণ logout() ভেতরে fire & forget সার্ভার কল করে
+            // যেটা পরে loginUser-এর handler হাইজ্যাক করে
+            // তাই শুধু লোকাল স্টেট ক্লিয়ার করা হচ্ছে
+            // ==========================================
+            appData.user = null;
+            appData.sessionToken = null;
+            localStorage.removeItem('user');
+            localStorage.removeItem('sessionToken');
             navigateTo('#login');
+            // ==========================================
         }
     });
 }
@@ -4882,9 +4858,19 @@ function handleSessionError() {
                     localStorage.setItem('user', JSON.stringify(res.user)); 
                     navigateTo('#account'); 
                 }
-                else { Swal.fire('Error', res.error, 'error'); }
-            }).loginUser(id, pass);
-        }
+// ✅ নতুন যা বসাবেন
+        else { Swal.fire('Error', res.error, 'error'); }
+    })
+    // ==========================================
+    // FIX: FAILURE HANDLER যোগ করা হচ্ছে
+    // এতে সার্ভার exception হলেও সুন্দরভাবে দেখাবে
+    // ==========================================
+    .withFailureHandler(err => {
+        Swal.close();
+        Swal.fire('Error', err.message || 'Login failed', 'error');
+    })
+    // ==========================================
+    .loginUser(id, pass);
 
         // ================= FORGOT PASSWORD WITH TIMER =================
         let forgotOtpTimerInterval = null;
@@ -5451,7 +5437,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by mixbd Team
+                        <br>Developed by safabd Team
                     </div>
                 </div>
             </footer>`;
