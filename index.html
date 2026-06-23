@@ -4644,15 +4644,9 @@ function placeOrder() {
     google.script.run.withSuccessHandler(res => {
         Swal.close(); // লোডিং বন্ধ করা
         
-    google.script.run
-    .withSuccessHandler(res => {
-        Swal.close(); // লোডিং বন্ধ করা
-        
-        // === SESSION INVALID CHECK (ROBUST VERSION LIKE MY ORDERS) ===
+        // === SESSION INVALID CHECK ===
         if (!res.success) {
             const errorMsg = (res.error || '').toLowerCase();
-            console.log("Order Place Error:", errorMsg);
-            
             // যদি এরর মেসেজে এই শব্দগুলো থাকে তবে সেশন এরর ধরে নেবে
             if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired')) {
                 handleSessionError(); 
@@ -4698,7 +4692,17 @@ function placeOrder() {
             // =================================================
         } 
     }).withFailureHandler(err => {
-        Swal.fire('Error', err.message, 'error');
+        // পলিফিল স্ট্রিং পাস করতে পারে, তাই সেফটি চেক
+        const errStr = String(err).toLowerCase();
+        
+        // যদি এররটি সেশন বা টোকেন রিলেটেড হয়, তবে সেশন এরর হ্যান্ডেলারে পাঠানো হবে
+        if (errStr.includes('session') || errStr.includes('token') || errStr.includes('unauthorized') || errStr.includes('expired') || errStr.includes('invalid')) {
+            handleSessionError();
+        } else {
+            // অন্যান্য সাধারণ এরর দেখানো হবে
+            const errorMsg = (err && err.message) ? err.message : String(err);
+            Swal.fire('Error', errorMsg, 'error');
+        }
     }).placeOrder(orderData);
 }
 
