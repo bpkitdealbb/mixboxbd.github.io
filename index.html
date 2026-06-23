@@ -1128,7 +1128,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     // VERCEL/NETLIFY HOSTING HELPER (POLYFILL FOR GOOGLE.SCRIPT.RUN)
     // ============================================================
     // নিচে আপনার Google Apps Script-এর বর্তমান Web App URL-টি বসিয়ে দিন:
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-r4LMVjYwar8w1BIPfhUT31EhtpqT3JdXMQ-WdDWlQo6tflbCFuBvDDfY1yKm4TsT/exec"; 
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby56ETMbv5TkKq9joDhqj6KwWkC35r_b5YKWD697xoO119_UPr_tjQsNCbNn1YA6zOK/exec"; 
 
     if (typeof google === 'undefined' || !google.script) {
         window.google = {
@@ -4639,7 +4639,7 @@ function placeOrder() {
         userEmail: appData.user.email
     };
 
-    Swal.fire({ title: t('processing'), didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: t('processing'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
     google.script.run.withSuccessHandler(res => {
         Swal.close(); // লোডিং বন্ধ করা
@@ -4668,13 +4668,17 @@ function placeOrder() {
             // ============================================
 
             // কার্ট এবং অন্যান্য স্টেট ক্লিয়ার করা
-            appData.cart = appData.cart.filter(item => item.selected === false);
+                        appData.cart = appData.cart.filter(item => item.selected === false);
             allOrdersCache = []; 
             appData.coupon = null;
             appData.pointsDiscount = 0;
-            appData.user.currentpoints -= res.pointsUsed;
             
-            localStorage.setItem('user', JSON.stringify(appData.user));
+            // সুরক্ষা: ইউজার যদি ইতিমধ্যে লগআউট করে থাকে, তবে পয়েন্ট আপডেট করবে না
+            if (appData.user) {
+                appData.user.currentpoints -= res.pointsUsed;
+                localStorage.setItem('user', JSON.stringify(appData.user));
+            }
+            
             localStorage.setItem('cart', JSON.stringify(appData.cart));
             localStorage.removeItem('coupon');
             
