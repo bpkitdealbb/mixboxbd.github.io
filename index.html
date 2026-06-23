@@ -3964,13 +3964,47 @@ function buyNow(product, qty = 1) {
     navigateTo('#cart');
 }
 
-        function proceedToCheckout() {
-            const selectedItems = appData.cart.filter(item => item.selected !== false);
-            if (selectedItems.length === 0) return Swal.fire('Empty', 'Please select items to checkout', 'warning');
+function proceedToCheckout() {
+    const selectedItems = appData.cart.filter(item => item.selected !== false);
+    if (selectedItems.length === 0) return Swal.fire('Empty', 'Please select items to checkout', 'warning');
+    
+    // ১. লোকালি ইউজার আছে কিনা চেক
+    if (!appData.user) {
+        return Swal.fire({ icon: 'warning', title: t('login_req'), text: t('login_to_continue'), confirmButtonText: t('login') }).then(() => navigateTo('#login'));
+    }
+
+    // ২. সার্ভারে সেশন ভ্যালিড আছে কিনা চেক (নতুন যোগ করা হচ্ছে)
+    Swal.fire({ title: t('validating'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    google.script.run
+        .withSuccessHandler(res => {
+            Swal.close();
             
-            if (!appData.user) return Swal.fire({ icon: 'warning', title: t('login_req'), text: t('login_to_continue'), confirmButtonText: t('login') }).then(() => navigateTo('#login'));
+            // সার্ভার থেকে success: false এসেছে কিনা চেক
+            if (res && res.success === false) {
+                const errMsg = (res.error || '').toLowerCase();
+                if (errMsg.includes('session') || errMsg.includes('token') || errMsg.includes('expired') || errMsg.includes('invalid')) {
+                    handleSessionError();
+                    return;
+                }
+            }
+
+            // সব ঠিক থাকলে চেকআউট পেজে নিয়ে যাও
             navigateTo('#checkout');
-        }
+        })
+        .withFailureHandler(err => {
+            Swal.close();
+            const errStr = String(err).toLowerCase();
+            if (errStr.includes('session') || errStr.includes('token') || errStr.includes('expired')) {
+                handleSessionError();
+            } else {
+                Swal.fire('Error', 'Could not verify session. Please try again.', 'error');
+            }
+        })
+        // ⚠️ গুরুত্বপূর্ণ নোট: নিচের 'validateSessionToken' হলো আপনার ব্যাকএন্ডের (Code.gs) ফাংশনের নাম। 
+        // আপনার ব্যাকএন্ডে যে নামে সেশন চেক করে, ঠিক সেই নামটি এখানে বসাবেন (যেমন: checkSession, verifyToken ইত্যাদি)
+        .validateSessionToken(appData.sessionToken, appData.user.email); 
+}
 <!-- পরের ভাগ (Part 3) এই লাইনের ঠিক নিচে পেস্ট করুন -->
 <!-- Part 3: Page Loaders, Generators, Footer & Closing Script -->
         // ================= PAGE LOADERS =================
@@ -5417,7 +5451,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by safabd Team
+                        <br>Developed by mixbd Team
                     </div>
                 </div>
             </footer>`;
