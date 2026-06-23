@@ -4615,14 +4615,12 @@ function placeOrder() {
     if (selectedItems.length === 0) return Swal.fire('Error', 'Please select at least one item', 'error');
     if (!name || !phone || !district || !upazila || !address) return Swal.fire('Missing', t('fill_all'), 'error');
     
-    // ইউজার লগড ইন আছে কিনা চেক
+    // ইউজার লগড ইন আছে কিনা ফ্রন্টএন্ড চেক
     if (!appData.user) {
         return handleSessionError();
     }
 
     const usePoints = document.getElementById('ptsToggle').checked;
-
-    // === ফেসবুক পিক্সেলের জন্য মোট অর্ডার ভ্যালু ক্যালকুলেশন ===
     const totalOrderValue = selectedItems.reduce((sum, item) => sum + ((item.price) * (item.quantity || item.qty)), 0);
 
     const orderData = {
@@ -4641,45 +4639,30 @@ function placeOrder() {
 
     Swal.fire({ title: t('processing'), didOpen: () => Swal.showLoading() });
     
-    google.script.run.withSuccessHandler(res => {
-        Swal.close(); // লোডিং বন্ধ করা
-        
-        // === SESSION INVALID CHECK ===
-        if (!res.success) {
-            const errorMsg = (res.error || '').toLowerCase();
-            // যদি এরর মেসেজে এই শব্দগুলো থাকে তবে সেশন এরর ধরে নেবে
-            if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired')) {
-                handleSessionError(); 
-                return; 
+    google.script.run
+        .withSuccessHandler(res => {
+            Swal.close();
+            
+            // === SUCCESS HANDLER: সেশন চেক ===
+            if (!res.success) {
+                const errorMsg = (res.error || '').toLowerCase();
+                
+                if (errorMsg.includes('session') || errorMsg.includes('token') || errorMsg.includes('invalid') || errorMsg.includes('expired') || errorMsg.includes('unauthorized') || errorMsg.includes('access')) {
+                    handleSessionError(); 
+                    return; 
+                }
+                else {
+                    Swal.fire('Failed', res.error, 'error'); 
+                }
+                return;
             }
-            // অন্যান্য এরর থাকলে সাধারণ এরর দেখাবে
-            else {
-                Swal.fire('Failed', res.error, 'error'); 
-            }
-        }
-        // ===========================================
 
-        if (res.success) {
-            // ==========================================
-            // ==========================================
-            // FIX: RACE CONDITION GUARD
-            // যদি রিসপন্স আসার আগেই ইউজার লগআউট হয়ে যায়, 
-            // তাহলে এই ব্লককে এক্সিকিউট না করে চুপচাপ বাদ দেওয়া হবে।
-            // (কারণ ইউজার ইতিমধ্যে "Session Expired" মেসেজ দেখেছে)
-            // ==========================================
-            if (!appData.user) {
-                return; 
-            }
-            // ==========================================
-
-            // === FACEBOOK PIXEL EVENT (Purchase) ===
+            // === অর্ডার সফল ===
             fbq('track', 'Purchase', {
                 value: totalOrderValue, 
                 currency: 'BDT'
-            }, { eventID: res.orderId }); 
-            // ============================================
+            }, { eventID: res.orderId });
 
-            // কার্ট এবং অন্যান্য স্টেট ক্লিয়ার করা
             appData.cart = appData.cart.filter(item => item.selected === false);
             allOrdersCache = []; 
             appData.coupon = null;
@@ -4690,7 +4673,6 @@ function placeOrder() {
             localStorage.setItem('cart', JSON.stringify(appData.cart));
             localStorage.removeItem('coupon');
             
-            // === SUCCESS MESSAGE ALERT (এখানেই মেসেজটি আসবে) ===
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -4701,21 +4683,35 @@ function placeOrder() {
                 updateCartBadge();
                 navigateTo('#home');
             });
-            // =================================================
-        } 
-    }).withFailureHandler(err => {
-        // পলিফিল স্ট্রিং পাস করতে পারে, তাই সেফটি চেক
-        const errStr = String(err).toLowerCase();
-        
-        // যদি এররটি সেশন বা টোকেন রিলেটেড হয়, তবে সেশন এরর হ্যান্ডেলারে পাঠানো হবে
-        if (errStr.includes('session') || errStr.includes('token') || errStr.includes('unauthorized') || errStr.includes('expired') || errStr.includes('invalid')) {
-            handleSessionError();
-        } else {
-            // অন্যান্য সাধারণ এরর দেখানো হবে
-            const errorMsg = (err && err.message) ? err.message : String(err);
-            Swal.fire('Error', errorMsg, 'error');
-        }
-    }).placeOrder(orderData);
+        })
+        // ==========================================
+        // ✅ এটাই মূল ফিক্স - FAILURE HANDLER-এ সেশন চেক
+        // ব্যাকএন্ড থেকে { success: false, error: 'Unauthorized...' } 
+        // আসলে Vercel polyfill এটিকে failureHandler-এ পাঠায়
+        // ==========================================
+        .withFailureHandler(err => {
+            Swal.close(); // লোডিং বন্ধ করা
+            
+            // err হতে পারে স্ট্রিং বা Error অবজেক্ট - দুটোই handle করা হচ্ছে
+            const errStr = String(err).toLowerCase();
+            
+            // ব্যাকএন্ড থেকে আসা এরর মেসেজে এই শব্দগুলো আছে কিনা চেক
+            if (
+                errStr.includes('session') || 
+                errStr.includes('token') || 
+                errStr.includes('unauthorized') || 
+                errStr.includes('expired') || 
+                errStr.includes('access') || 
+                errStr.includes('invalid') || 
+                errStr.includes('authentication')
+            ) {
+                handleSessionError();
+            } else {
+                // সাধারণ এরর
+                Swal.fire('Error', err.message || String(err), 'error');
+            }
+        })
+        .placeOrder(orderData);
 }
 
         // ==========================================
