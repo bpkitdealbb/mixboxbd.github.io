@@ -4661,19 +4661,14 @@ function placeOrder() {
 
         if (res.success) {
             // ==========================================
+            // ==========================================
             // FIX: RACE CONDITION GUARD
             // যদি রিসপন্স আসার আগেই ইউজার লগআউট হয়ে যায়, 
-            // তাহলে এই ব্লককে এক্সিকিউট না করে লগইন পেজে পাঠিয়ে দেওয়া হবে।
+            // তাহলে এই ব্লককে এক্সিকিউট না করে চুপচাপ বাদ দেওয়া হবে।
+            // (কারণ ইউজার ইতিমধ্যে "Session Expired" মেসেজ দেখেছে)
             // ==========================================
             if (!appData.user) {
-                Swal.fire({
-                    icon: 'success',
-                    title: t('order_placed'),
-                    text: `Order ID: ${res.orderId}. ${t('please_login')} to view orders.`,
-                    confirmButtonText: t('login'),
-                    confirmButtonColor: appData.settings.themecolor || '#2563eb'
-                }).then(() => navigateTo('#login'));
-                return; // ফাংশন এখানেই থেমে যাবে, নিচের null এরর হবে না
+                return; 
             }
             // ==========================================
 
