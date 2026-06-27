@@ -818,7 +818,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border p-4">
                     <h2 class="font-bold border-b pb-2 mb-3" data-i18n="order_summary">Order Summary</h2>
-                    <div id="checkoutItems" class="space-y-2 text-sm mb-3 max-h-40 overflow-y-auto"></div>
+<div id="checkoutItems" class="space-y-0 text-sm mb-3 max-h-64 overflow-y-auto"></div>
                     <div class="space-y-1 text-sm border-t pt-2">
                         <div class="flex justify-between"><span data-i18n="subtotal">Subtotal</span> <span id="checkoutSubtotal">৳ 0</span></div>
                         <div class="flex justify-between"><span data-i18n="delivery">Delivery</span> <span id="checkoutDelivery">৳ 0</span></div>
@@ -4592,12 +4592,52 @@ function loadCartPage() {
             upaSelect.innerHTML = '<option value="">' + t('Select Upazila') + '</option>' + (appData.locations[dist] || []).map(u => `<option value="${u}">${u}</option>`).join('');
         }
 
-        function updateCheckoutSummary() {
-            const selectedItems = appData.cart.filter(item => item.selected !== false);
-            const container = document.getElementById('checkoutItems');
-            container.innerHTML = selectedItems.map(i => `<div class="flex justify-between text-gray-600 text-xs"><span>${i.name} ${i.selectedVariant ? `(${i.selectedVariant})` : ''} x${i.quantity || i.qty}</span> <span>৳ ${((i.price) * (i.quantity || i.qty)).toFixed(2)}</span></div>`).join('');
-            updateOrderSummary();
-        }
+function updateCheckoutSummary() {
+    const selectedItems = appData.cart.filter(item => item.selected !== false);
+    const container = document.getElementById('checkoutItems');
+    
+    if (selectedItems.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">No items selected</p>';
+        updateOrderSummary();
+        return;
+    }
+
+    container.innerHTML = selectedItems.map(i => {
+        const qty = i.quantity || i.qty || 1;
+        const itemTotal = (parseFloat(i.price) * qty).toFixed(2);
+        const variantText = i.selectedVariant ? `<span class="text-[10px] text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded ml-1">${i.selectedVariant}</span>` : '';
+        const itemImage = i.imagemain || 'https://via.placeholder.com/50?text=No+Img';
+
+        return `
+            <div class="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
+                <!-- পণ্যের ছবি -->
+                <div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                    <img src="${itemImage}" 
+                         class="w-full h-full object-cover" 
+                         loading="lazy" 
+                         alt="${i.name}"
+                         onerror="this.src='https://via.placeholder.com/50?text=No+Img'">
+                </div>
+                
+                <!-- পণ্যের তথ্য -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">${i.name}</p>
+                            <div class="flex items-center mt-0.5">
+                                ${variantText}
+                                <span class="text-[10px] text-gray-400">x${qty}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-gray-800 whitespace-nowrap">৳ ${itemTotal}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    updateOrderSummary();
+}
 
 function placeOrder() {
     const name = document.getElementById('checkoutName').value.trim();
