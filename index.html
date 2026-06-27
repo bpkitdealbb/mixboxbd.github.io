@@ -4536,7 +4536,6 @@ function loadCartPage() {
 }
 
         function loadCheckoutPage() {
-    window.scrollTo(0, 0);
             loadTemplate('checkoutTemplate');
             if (!appData.user) {
                 document.getElementById('loginRequired').classList.remove('hidden');
