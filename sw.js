@@ -1,4 +1,4 @@
-const CACHE_NAME = 'MixBoxbd-v8'; // ভার্সন চেঞ্জ করেছি (v1 থেকে v2)
+const CACHE_NAME = 'MixBoxbd-v2'; // ভার্সন চেঞ্জ করেছি (v1 থেকে v2)
 
 const ASSETS = [
   './',
@@ -6,7 +6,7 @@ const ASSETS = [
   './manifest.json'
 ];
 
-// ১. ইন্সটল ইভেন্ট
+// ১. ইন্সটল ইভেন্ট করল
 self.addEventListener('install', (e) => {
   // নতুন সার্ভিস ওয়ার্কার ডাউনলোড হলে সাথে সাথে অ্যাক্টিভ হবে (waiting থাকবে না)
   self.skipWaiting(); 
