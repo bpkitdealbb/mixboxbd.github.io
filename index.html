@@ -1921,15 +1921,25 @@ function navigateTo(route) {
     window.location.hash = route;
 }
 
-        function loadRoute(hash) {
-            // ==========================================
-    // FIX: IMMEDIATE SCROLL RESET
+function loadRoute(hash) {
     // ==========================================
-    // রাউট পরিবর্তন হলেই জোর করে উপরে নিয়ে আসা হচ্ছে।
-    // এটি ব্যাকগ্রাউন্ডে স্ক্রল করা পুরনো পেজের ভিউ হাইড করে দেয়।
-    window.scrollTo(0, 0);
+    // FIX: SMART SCROLL RESET (SKIP FOR CHECKOUT RETURN)
     // ==========================================
-            instantScrollFix();
+    let skipScrollToTop = false;
+    if (hash.includes('checkout')) {
+        try {
+            const savedScroll = sessionStorage.getItem('scrollPos_' + hash);
+            if (savedScroll && parseInt(savedScroll, 10) > 0) {
+                skipScrollToTop = true;
+            }
+        } catch(e) {}
+    }
+    
+    if (!skipScrollToTop) {
+        window.scrollTo(0, 0);
+    }
+    // ==========================================
+    instantScrollFix();
             const [route, queryString] = hash.replace('#', '').split('?');
             const params = new URLSearchParams(queryString);
             const content = document.getElementById('content');
@@ -2980,15 +2990,26 @@ window.addEventListener('scroll', () => {
         } catch (e) {}
     }
     // ==========================================
-    // ২. ক্যাটাগরি পেজের স্ক্রল সেভ করা (নতুন)
+    // ==========================================
+    // ২. ক্যাটাগরি পেজের স্ক্রল সেভ করা
     // ==========================================
     else if (currentHash.includes('category')) {
         const scrollY = window.scrollY;
-        // প্রতিটি ক্যাটাগরির জন্য আলাদা আলাদা নাম (Key) ব্যবহার করা হচ্ছে
         try {
             sessionStorage.setItem('scrollPos_' + currentHash, scrollY);
         } catch (e) {
             console.warn("SessionStorage error (Category):", e);
+        }
+    }
+    // ==========================================
+    // ৩. চেকআউট পেজের স্ক্রল সেভ করা (নতুন)
+    // ==========================================
+    else if (currentHash.includes('checkout')) {
+        const scrollY = window.scrollY;
+        try {
+            sessionStorage.setItem('scrollPos_' + currentHash, scrollY);
+        } catch (e) {
+            console.warn("SessionStorage error (Checkout):", e);
         }
     }
 }, { passive: true });
@@ -4535,8 +4556,27 @@ function loadCartPage() {
     updateCartPageUI();
 }
 
-        function loadCheckoutPage() {
-            loadTemplate('checkoutTemplate');
+function loadCheckoutPage() {
+    // ==========================================
+    // FIX: CHECKOUT SCROLL RESTORATION
+    // ==========================================
+    const currentHash = window.location.hash;
+    let targetScrollY = 0;
+    try {
+        const savedScroll = sessionStorage.getItem('scrollPos_' + currentHash);
+        if (savedScroll) {
+            targetScrollY = parseInt(savedScroll, 10);
+        }
+    } catch (e) {
+        targetScrollY = 0;
+    }
+
+    requestAnimationFrame(() => {
+        window.scrollTo(0, targetScrollY);
+    });
+    // ==========================================
+
+    loadTemplate('checkoutTemplate');
             if (!appData.user) {
                 document.getElementById('loginRequired').classList.remove('hidden');
                 document.getElementById('billingForm').classList.add('hidden');
