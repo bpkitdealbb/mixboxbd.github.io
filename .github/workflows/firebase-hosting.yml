@@ -16,6 +16,6 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: mixboxonline # <--- আপনার সঠিক প্রজেক্ট আইডি
+          projectId: safaboxbd # <--- আপনার সঠিক প্রজেক্ট আইডি
           channelId: live
           
