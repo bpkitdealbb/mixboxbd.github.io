@@ -21,13 +21,13 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SafaBoxbd | Trendy Variety Store</title> <!-- Default Title, will be updated by JS -->
+    <title>MixBoxbd | A Budget Friendly Variety Store</title> <!-- Default Title, will be updated by JS -->
     
     <!-- ========================================== -->
     <!-- নতুন ফেভিকন ও ডেসক্রিপশন -->
     <!-- ========================================== -->
     
-    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dkowkawiq/image/upload/v1783075015/20260703_163558_tmym5q.webp">
+    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dkowkawiq/image/upload/v1781534517/134354_qrjim2.webp">
     
     <meta name="description" content="একটি আধুনিক ও ট্রেন্ডি ভ্যারাইটি শপ, আমরা ইনসাফ ভিত্তিক ব্যবসা পরিচালনায় সচেষ্ট। সাশ্রয়ী মূল্য এবং গুণগত মানের নিশ্চয়তায় সেরা অনলাইন শপিং অভিজ্ঞতা প্রদানে দৃঢ় প্রতিজ্ঞাবদ্ধ">
 
@@ -83,6 +83,19 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
+    /* ==========================================
+   PREMIUM SKELETON: YouTube/Facebook Style
+   ঢেউ দিয়ে দিয়ে আলো চলে যাওয়ার ইফেক্ট
+   ========================================== */
+@keyframes sweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.style-sweep {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    animation: sweep 1.5s ease-in-out infinite;
+}
         /* ডিফল্ট কালার সেট করা হয়েছে, JS এসার পরিবর্তন হবে */
         :root { 
             --primary-color: #2563eb; 
@@ -93,7 +106,8 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .nav-active { color: var(--primary-color); }
         .hero-container { scroll-snap-type: x mandatory; }
-        .hero-slide { scroll-snap-align: start; }
+        .hero-slide { scroll-snap-align: start;
+        scroll-snap-stop: always;}
         .gallery-container { scroll-snap-type: x mandatory; }
         .gallery-slide { scroll-snap-align: start; }
         .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
@@ -288,33 +302,79 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
 <body class="bg-background text-gray-800 font-sans antialiased">
 
     <!-- Skeleton Loader -->
-    <div id="skeletonLoader" class="fixed inset-0 bg-white z-50 flex flex-col h-screen overflow-y-auto">
-        <div class="h-16 border-b flex items-center px-4 shrink-0">
-            <div class="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-32 h-6 bg-gray-200 rounded ml-3 animate-pulse"></div>
-            <div class="ml-auto w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+    <div id="skeletonLoader" class="fixed inset-0 bg-white z-50 flex flex-col h-screen overflow-y-auto no-scrollbar">
+        
+        <!-- ১. হেডার -->
+        <div class="h-16 border-b border-gray-100 flex items-center px-4 shrink-0 bg-white">
+            <div class="w-10 h-10 bg-gray-200 rounded-full style-sweep"></div>
+            <div class="w-36 h-6 bg-gray-200 rounded-lg ml-3 style-sweep"></div>
+            <div class="ml-auto w-10 h-10 bg-gray-200 rounded-full style-sweep"></div>
         </div>
-        <div class="w-full h-64 bg-gray-200 animate-pulse shrink-0"></div>
-        <div class="px-4 py-6">
-            <div class="h-6 w-32 bg-gray-200 rounded mb-4 animate-pulse"></div>
-            <div class="flex space-x-4 overflow-x-auto no-scrollbar">
-                <? for(let i=0; i<4; i++){ ?>
-                <div class="w-20 h-20 bg-gray-200 rounded-xl animate-pulse shrink-0"></div>
-                <? } ?>
+        
+        <!-- ২. হিরো স্লাইডার -->
+        <div class="w-full h-64 bg-gray-200 shrink-0 style-sweep"></div>
+        
+        <!-- ৩. টপ ক্যাটাগরি (৪টি বড় বর্গাকার) -->
+        <div class="px-4 py-6 bg-white mt-4">
+            <div class="w-40 h-7 bg-gray-200 rounded-lg mb-6 mx-auto style-sweep"></div>
+            <div class="grid grid-cols-4 gap-3">
+                <div class="aspect-square bg-gray-200 rounded-2xl style-sweep"></div>
+                <div class="aspect-square bg-gray-200 rounded-2xl style-sweep"></div>
+                <div class="aspect-square bg-gray-200 rounded-2xl style-sweep"></div>
+                <div class="aspect-square bg-gray-200 rounded-2xl style-sweep"></div>
             </div>
         </div>
-        <div class="px-4 pb-4">
-            <div class="h-6 w-32 bg-gray-200 rounded mb-4 animate-pulse"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <? for(let i=0; i<4; i++){ ?>
-                <div class="bg-white rounded-lg shadow-sm p-2">
-                    <div class="aspect-square bg-gray-200 rounded-lg mb-3"></div>
-                    <div class="h-4 w-3/4 bg-gray-200 rounded mt-3 animate-pulse"></div>
-                    <div class="h-6 w-20 bg-gray-200 rounded mt-2 animate-pulse"></div>
+        
+        <!-- ৪. ফিচার্ড প্রোডাক্ট (২টি কার্ড) -->
+        <div class="px-4 py-6 bg-white mt-4">
+            <div class="w-32 h-7 bg-gray-200 rounded-lg mb-6 mx-auto style-sweep"></div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
                 </div>
-                <? } ?>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
+                </div>
             </div>
         </div>
+        
+        <!-- ৫. অল প্রোডাক্ট (৪টি কার্ড) -->
+        <div class="px-4 py-6 bg-white mt-4 mb-24">
+            <div class="w-40 h-7 bg-gray-200 rounded-lg mb-6 mx-auto style-sweep"></div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="aspect-square bg-gray-200 rounded-xl mb-3 style-sweep"></div>
+                    <div class="h-4 bg-gray-200 rounded-md w-3/4 mb-3 style-sweep"></div>
+                    <div class="h-3 bg-gray-200 rounded-md w-1/2 mb-4 style-sweep"></div>
+                    <div class="h-10 bg-gray-200 rounded-lg w-full style-sweep"></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
     
     <!-- Main App -->
@@ -1128,7 +1188,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     // VERCEL/NETLIFY HOSTING HELPER (POLYFILL FOR GOOGLE.SCRIPT.RUN)
     // ============================================================
     // নিচে আপনার Google Apps Script-এর বর্তমান Web App URL-টি বসিয়ে দিন:
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzQkjZqPj2PnlYi-tC0X4Hshw6CCqFQHpukluNoxqk8-ferOdfXqJiz_NyRx11MOl7d/exec"; 
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBEgehDIHOH4X4oYLplxmKgKKuR3qa_aNmiKS1ZqY0d0hXtWTSCxNiToAt7KBR_sp6/exec"; 
 
     if (typeof google === 'undefined' || !google.script) {
         window.google = {
@@ -1668,18 +1728,6 @@ function instantScrollFix() {
                                         syncCartWithLivePrices();
                                         initFilterOptions();
                                         
-                                        // ব্যবহারকারীকে সফল আপডেটের একটি ছোট মেসেজ দেওয়া
-                                        const Toast = Swal.mixin({
-                                            toast: true,
-                                            position: 'top-end',
-                                            showConfirmButton: false,
-                                            timer: 3000,
-                                            timerProgressBar: true
-                                        });
-                                        Toast.fire({
-                                            icon: 'success',
-                                            title: 'Data Automatically Updated!'
-                                        });
                                     }
                                 }
                             })
@@ -1811,7 +1859,7 @@ document.addEventListener('DOMContentLoaded', () => {
             instantScrollFix(); 
             loadInitialData();
             setupEventListeners();
-            
+                if (appData.user && appData.user.userid) silentPointsRefresh();
             document.addEventListener('click', function(event) {
                 const searchBar = document.getElementById('searchBar');
                 const searchIcon = document.querySelector('button[onclick="toggleSearch()"]');
@@ -2875,109 +2923,272 @@ function incrementTrackAttempt() {
         // ===============================================
 
         // ================= PAGINATION LOGIC =================
-        function loadAllProductsSection(pageNum) {
-            // Update Global State for the current page
-            appData.allProductsCurrentPage = pageNum;
-            
-            // ==================================================
-            // CRITICAL FIX FOR PART 3: SAVE TO SESSIONSTORAGE (WITH TRY-CATCH)
-            // ==================================================
-            // প্রতিবার পেজ চেঞ্জ হলে SessionStorage-এ সেভ করা হবে
-            try {
-                sessionStorage.setItem('homePageNum', pageNum);
-            } catch (e) {
-                console.warn("Failed to save page number to sessionStorage:", e);
-            }
-            // ==================================================
-            
-            const featuredProds = appData.products.slice(0, 6);
-            const featuredIds = featuredProds.map(p => p.id);
-            const allProds = appData.products.filter(p => !featuredIds.includes(p.id));
-            
-            const totalProducts = allProds.length;
-            
-            let startIdx, endIdx;
-            
-            if (pageNum === 1) {
-                startIdx = 0;
-                endIdx = 10;
-            } else {
-                startIdx = 10 + ((pageNum - 2) * 30);
-                endIdx = startIdx + 30;
-            }
+// সাহায্যকারী ফাংশন: অ্যারে এলোমেলো (Shuffle) করার জন্য
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
-            const visibleProducts = allProds.slice(startIdx, endIdx);
-            const container = document.getElementById('homeAllProductsList');
-            
-            if(container) {
-                container.innerHTML = visibleProducts.map(p => createProductCard(p)).join('');
-                container.className = 'grid grid-cols-2 gap-3';
-            }
+// ১. সম্পূর্ণ প্রোডাক্ট লিস্টকে পেজ ভিত্তিক বিন্যাস (Layout) করার মেইন ফাংশন
+function generateAllPagesLayout() {
+    const allProducts = appData.products || [];
+    if (allProducts.length === 0) return;
 
-            const heroSection = document.getElementById('homeHeroSection');
-            const featuredSection = document.getElementById('featuredProducts');
-            const titleRow = document.getElementById('homeAllProductsTitleRow');
-            const pageLabel = document.getElementById('currentPageLabel');
+    // ১ থেকে ৬ নম্বর প্রোডাক্ট ফিচার্ড (আলাদা থাকবে)
+    const featuredProds = allProducts.slice(0, 6);
+    // ৭ ও ৮ নম্বর প্রোডাক্ট অল প্রোডাক্ট সেকশনের শুরুতে ফিক্সড থাকবে
+    const fixedProds = allProducts.slice(6, 8);
+    // ৯ নম্বর থেকে বাকি সব প্রোডাক্ট ডাইনামিক পুলে যাবে
+    const dynamicPool = allProducts.slice(8);
 
-            if(pageLabel) pageLabel.innerText = pageNum;
+    // অ্যাক্টিভ ব্যানার ক্যাটাগরিগুলো ফিল্টার করা (শিটের ক্রমানুসারে থাকবে)
+    const bannerCats = (appData.categories || []).filter(c => 
+        c.inlinebanner && 
+        c.inlinebanner.trim() !== '' && 
+        (c.inlinebanner.startsWith('http://') || c.inlinebanner.startsWith('https://'))
+    );
 
-            if (pageNum > 1) {
-                if(heroSection) heroSection.style.display = 'none';
-                if(featuredSection) featuredSection.style.display = 'none'; 
-                if(titleRow) titleRow.classList.remove('hidden');
-            } else {
-                if(heroSection) heroSection.style.display = '';
-                if(featuredSection) featuredSection.style.display = ''; 
-                if(titleRow) titleRow.classList.remove('hidden');
-            }
+    // ব্যানারগুলোকে ইউনিক অবজেক্ট হিসেবে অ্যারেতে রাখা (এখানে কোনো shuffle হবে না, শিটের সিরিয়াল ঠিক থাকবে)
+    let activeBanners = bannerCats.map(cat => {
+        return {
+            category: cat.categoryname, 
+            bannerUrl: cat.inlinebanner,
+            products: []
+        };
+    });
 
-            renderPaginationControls(pageNum, totalProducts);
-            
-            window.scrollTo(0, 0);
+    // প্রোডাক্টগুলোকে তাদের সঠিক ব্যানারে ভাগ করা
+    const normalPool = [];
+    dynamicPool.forEach(p => {
+        if (!p.category) {
+            normalPool.push(p);
+            return;
         }
 
-        function renderPaginationControls(currentPage, totalProducts) {
-            const container = document.getElementById('homePaginationControls');
-            if(!container) return;
+        // প্রথমে একদম হুবহু মিল (Exact Match) বা সাব-ক্যাটাগরি মিল খোঁজা
+        let matchedBanner = activeBanners.find(b => 
+            p.category === b.category || p.category.startsWith(b.category + ' > ')
+        );
 
-            const remaining = totalProducts - 10;
-            let extraPages = 0;
-            if (remaining > 0) {
-                extraPages = Math.ceil(remaining / 30);
-            }
-            const totalPages = 1 + extraPages;
-
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-
-            html += `<button onclick="loadAllProductsSection(${currentPage - 1})" 
-                     ${currentPage === 1 ? 'disabled' : ''} 
-                     class="px-3 py-1 border rounded font-medium transition-colors 
-                     ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed border-gray-200' : 'hover:bg-gray-50 text-gray-700'}">
-                     <i class="fas fa-chevron-left"></i>
-                     </button>`;
-
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === currentPage) {
-                    html += `<button class="w-8 h-8 flex items-center justify-center rounded font-bold text-white bg-primary shadow-md">${i}</button>`;
-                } else {
-                    html += `<button onclick="loadAllProductsSection(${i})" class="w-8 h-8 flex items-center justify-center rounded font-medium text-gray-700 border hover:bg-gray-50 transition-colors">${i}</button>`;
-                }
-            }
-
-            html += `<button onclick="loadAllProductsSection(${currentPage + 1})" 
-                     ${currentPage === totalPages ? 'disabled' : ''} 
-                     class="px-3 py-1 border rounded font-medium transition-colors 
-                     ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed border-gray-200' : 'hover:bg-gray-50 text-gray-700'}">
-                     <i class="fas fa-chevron-right"></i>
-                     </button>`;
-
-            container.innerHTML = html;
+        // যদি নিখুঁত মিল না পাওয়া যায়, তবে মেইন ক্যাটাগরি মিল খোঁজা
+        if (!matchedBanner) {
+            matchedBanner = activeBanners.find(b => 
+                p.category.split(' > ')[0] === b.category.split(' > ')[0]
+            );
         }
+
+        if (matchedBanner) {
+            matchedBanner.products.push(p);
+        } else {
+            normalPool.push(p);
+        }
+    });
+
+    // যেসব ব্যানারে কোনো প্রোডাক্ট নেই সেগুলো বাদ দেওয়া
+    activeBanners = activeBanners.filter(b => b.products.length > 0);
+
+    // শর্ত মোতাবেক: ব্যানারের ভেতরের প্রোডাক্টগুলো এলোমেলো করা
+    activeBanners.forEach(banner => {
+        shuffleArray(banner.products);
+    });
+
+    // !!! নোট: ব্যানারগুলোর নিজেদের সিরিয়াল এলোমেলো করার লাইনটি (shuffleArray) এখান থেকে সম্পূর্ণ ফেলে দেওয়া হয়েছে !!!
+
+    const pages = {};
+    let currentPage = 1;
+    pages[currentPage] = { fixedProducts: [], bannerGroups: [], normalProducts: [] };
+
+    // পেজ ১-এর অল প্রোডাক্ট সেকশনের শুরুতে ২টি ফিক্সড প্রোডাক্ট বসানো
+    pages[1].fixedProducts = fixedProds;
+    let currentCount = 2; 
+    
+    let bannerIdx = 0;
+
+    // ব্যানারগুলো পেজ অনুযায়ী ডিস্ট্রিবিউট করা
+    while (bannerIdx < activeBanners.length) {
+        let pageLimit = (currentPage === 1) ? 10 : 30;
+        let maxPerBanner = (currentPage === 1) ? 4 : 6;
+        let availableSlots = pageLimit - currentCount;
+
+        if (availableSlots <= 0) {
+            currentPage++;
+            pages[currentPage] = { fixedProducts: [], bannerGroups: [], normalProducts: [] };
+            currentCount = 0;
+            continue;
+        }
+
+        let banner = activeBanners[bannerIdx];
+        let takeCount = Math.min(banner.products.length, maxPerBanner);
+
+        if (takeCount <= availableSlots) {
+            let bannerProds = banner.products.slice(0, takeCount);
+            let excessProds = banner.products.slice(takeCount);
+
+            excessProds.forEach(p => normalPool.push(p));
+
+            pages[currentPage].bannerGroups.push({
+                category: banner.category, 
+                bannerUrl: banner.bannerUrl,
+                products: bannerProds
+            });
+
+            currentCount += takeCount;
+            bannerIdx++; 
+        } else {
+            shuffleArray(normalPool);
+            while (currentCount < pageLimit && normalPool.length > 0) {
+                pages[currentPage].normalProducts.push(normalPool.shift());
+                currentCount++;
+            }
+            currentPage++;
+            pages[currentPage] = { fixedProducts: [], bannerGroups: [], normalProducts: [] };
+            currentCount = 0;
+        }
+    }
+
+    // সমস্ত ব্যানার সাজানো শেষ হলে, বাকি থাকা সাধারণ প্রোডাক্টগুলো দিয়ে খালি স্লট পূরণ করা
+    shuffleArray(normalPool);
+    while (normalPool.length > 0) {
+        let pageLimit = (currentPage === 1) ? 10 : 30;
+        if (currentCount >= pageLimit) {
+            currentPage++;
+            pages[currentPage] = { fixedProducts: [], bannerGroups: [], normalProducts: [] };
+            currentCount = 0;
+        }
+        pages[currentPage].normalProducts.push(normalPool.shift());
+        currentCount++;
+    }
+
+    appData.computedPages = pages;
+    appData.totalComputedPages = currentPage;
+}
+
+// ২. ইউআই রেন্ডারিং ফাংশন
+function loadAllProductsSection(pageNum, shouldScrollToTop = true) {
+    appData.allProductsCurrentPage = pageNum;
+    try { sessionStorage.setItem('homePageNum', pageNum); } catch (e) {}
+
+    // ফিক্স: পেজ ১-এ ক্লিক করলেও বারবার রিলোড হবে না। শুধুমাত্র প্রথমবার বা ডাটা না থাকলে লেআউট জেনারেট হবে।
+    if (!appData.computedPages) {
+        generateAllPagesLayout();
+    }
+
+    const pageData = appData.computedPages[pageNum] || { fixedProducts: [], bannerGroups: [], normalProducts: [] };
+    const container = document.getElementById('homeAllProductsList');
+    if (!container) return;
+
+    let html = '';
+
+    // ক. ফিক্সড প্রোডাক্ট রেন্ডার
+    if (pageData.fixedProducts && pageData.fixedProducts.length > 0) {
+        pageData.fixedProducts.forEach(p => {
+            html += createProductCard(p);
+        });
+    }
+
+    // খ. ব্যানার এবং তার আন্ডারে থাকা প্রোডাক্ট রেন্ডার
+    if (pageData.bannerGroups && pageData.bannerGroups.length > 0) {
+        pageData.bannerGroups.forEach(group => {
+            
+            // চেক করা হচ্ছে লিংকটি ভিডিও (mp4/webm) নাকি সাধারণ ইমেজ
+            const isVideo = group.bannerUrl && group.bannerUrl.match(/\.(mp4|webm|ogg)($|\?)/i);
+            
+            let mediaTag = '';
+            if (isVideo) {
+                // ভিডিওর জন্য ট্যাগ (অটো-প্লে, লুপ এবং সাউন্ড মিউট করা হয়েছে ব্রাউজার পলিসির জন্য)
+                mediaTag = `
+                    <video src="${group.bannerUrl}" class="w-full h-auto object-cover" 
+                           autoplay loop muted playsinline
+                           onerror="this.parentElement.parentElement.style.display='none';">
+                    </video>
+                `;
+            } else {
+                // ইমেজের জন্য আগের ট্যাগ
+                mediaTag = `
+                    <img src="${group.bannerUrl}" class="w-full h-auto object-cover" loading="lazy"
+                         onerror="this.parentElement.parentElement.style.display='none';" alt="${group.category}">
+                `;
+            }
+
+            html += `
+                <div class="col-span-2 w-full my-2">
+                    <div class="w-full rounded-xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm cursor-pointer hover:shadow-md transition-shadow" 
+                         onclick="event.stopPropagation(); navigateTo('#category?name=${encodeURIComponent(group.category)}')">
+                        ${mediaTag}
+                    </div>
+                </div>
+            `;
+            
+            group.products.forEach(p => {
+                html += createProductCard(p);
+            });
+
+            if (group.products.length % 2 !== 0) {
+                html += `<div class="w-full h-full pointer-events-none hidden md:block"></div>`;
+            }
+        });
+    }
+
+
+    // গ. সাধারণ বা নরমাল প্রোডাক্ট রেন্ডার
+    if (pageData.normalProducts && pageData.normalProducts.length > 0) {
+        pageData.normalProducts.forEach(p => {
+            html += createProductCard(p);
+        });
+    }
+
+    container.innerHTML = html;
+    container.className = 'grid grid-cols-2 gap-3';
+
+    // ==========================================
+    // ইউআই (UI) এবং সেকশন ভিজিবিলিটি আপডেট
+    // ==========================================
+    const heroSection = document.getElementById('homeHeroSection');
+    const featuredSection = document.getElementById('featuredProducts');
+    const titleRow = document.getElementById('homeAllProductsTitleRow');
+    const pageLabel = document.getElementById('currentPageLabel');
+
+    if (pageLabel) pageLabel.innerText = pageNum;
+    
+    if (pageNum > 1) {
+        if (heroSection) heroSection.style.display = 'none';
+        if (featuredSection) featuredSection.style.display = 'none';
+        if (titleRow) titleRow.classList.remove('hidden');
+    } else {
+        if (heroSection) heroSection.style.display = '';
+        if (featuredSection) featuredSection.style.display = '';
+        if (titleRow) titleRow.classList.remove('hidden');
+    }
+
+    const totalVirtualItems = 10 + ((appData.totalComputedPages - 1) * 30);
+    renderPaginationControls(pageNum, totalVirtualItems);
+    
+    if (shouldScrollToTop) {
+        window.scrollTo(0, 0);
+    }
+}
+
+
+function renderPaginationControls(currentPage, totalProducts) {
+    const container = document.getElementById('homePaginationControls');
+    if (!container) return;
+    const remaining = totalProducts - 10;
+    let extraPages = remaining > 0 ? Math.ceil(remaining / 30) : 0;
+    const totalPages = 1 + extraPages;
+    if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+    let html = '';
+    html += `<button onclick="loadAllProductsSection(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="px-3 py-1 border rounded font-medium transition-colors ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed border-gray-200' : 'hover:bg-gray-50 text-gray-700'}"><i class="fas fa-chevron-left"></i></button>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += i === currentPage 
+            ? `<button class="w-8 h-8 flex items-center justify-center rounded font-bold text-white bg-primary shadow-md">${i}</button>` 
+            : `<button onclick="loadAllProductsSection(${i})" class="w-8 h-8 flex items-center justify-center rounded font-medium text-gray-700 border hover:bg-gray-50 transition-colors">${i}</button>`;
+    }
+    html += `<button onclick="loadAllProductsSection(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="px-3 py-1 border rounded font-medium transition-colors ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed border-gray-200' : 'hover:bg-gray-50 text-gray-700'}"><i class="fas fa-chevron-right"></i></button>`;
+    container.innerHTML = html;
+}
 window.addEventListener('scroll', () => {
     const currentHash = window.location.hash;
 
@@ -3189,31 +3400,56 @@ function calculateCartTotal() {
         // ১. বর্তমান কার্টের আইটেমগুলো নিন
         const selectedItems = appData.cart.filter(item => item.selected !== false);
         
-        // ২. একটি ইউনিক হ্যাশ (Hash) তৈরি করুন (UserID + CartItems)
-        // কারণ পয়েন্ট ব্যক্তিগত, তাই UserID যোগ করা জরুরি
+        // ২. একটি ইউনিক হ্যাশ (Hash) তৈরি করুন
         const cartString = JSON.stringify(selectedItems);
         const currentHash = simpleHash(appData.user.userid + cartString);
 
         // ৩. চেক করুন: আগে কি একই কার্ট নিয়ে একই ইউজার চেক করেছিল?
         if (cachedPointsResult && lastPointsCartHash === currentHash) {
-            // হ্যাঁ, ক্যাশ আছে! সার্ভারে যাওয়ার দরকার নেই।
             
-            // সরাসরি ক্যাশ থেকে ডাটা লোড করুন
+            // ==========================================
+            // নতুন যোগ করা লজিক: যদি আগের রেজাল্ট এরর (Failed) হয়ে থাকে
+            // ==========================================
+            if (cachedPointsResult.failed) {
+                toggle.checked = false; // সুইচ বন্ধ রাখুন
+                if(spinner) spinner.classList.add('hidden');
+                toggle.disabled = false;
+                
+                // ক্যাশ থেকে আগের এরর মেসেজটি রিট্রিভ করা হচ্ছে
+                const savedError = cachedPointsResult.error || "Something went wrong.";
+                
+                // চেক করা হচ্ছে এটা কি মিনিমাম অর্ডার এরর নাকি অন্য কোনো এরর (যেমন: এক্সপায়ার্ড)
+                if (savedError.includes("Minimum order not met")) {
+                    const minAmount = appData.settings.minorderforpoints || 0;
+                    const messageBn = `পয়েন্ট ডিসকাউন্ট ব্যবহার করতে হলে আপনাকে নূন্যতম ${minAmount} টাকার অর্ডার করতে হবে...`;
+                    const messageEn = `To use points discount, you need to place a minimum order of ${minAmount} Taka...`;
+                    Swal.fire({
+                        icon: 'info',
+                        title: appData.language === 'bn' ? 'তথ্য' : 'Info',
+                        text: appData.language === 'bn' ? messageBn : messageEn,
+                        confirmButtonText: appData.language === 'bn' ? 'ঠিক আছে' : 'OK',
+                        confirmButtonColor: appData.settings.themecolor || '#2563eb'
+                    });
+                } else {
+                    // পয়েন্ট এক্সপায়ার্ড বা অন্য যেকোনো এরর
+                    Swal.fire('Info', savedError, 'info');
+                }
+                return; // সার্ভারে যাওয়ার দরকার নেই, এখানেই থামানো হলো
+            }
+            // ==========================================
+            // ==========================================
+
+            // হ্যাঁ, সফল ক্যাশ আছে!
             appData.pointsDiscount = cachedPointsResult.discount;
-            
-            // UI আপডেট করুন
             if(savingsLabel) savingsLabel.innerText = `Save ৳${cachedPointsResult.discount.toFixed(2)}`;
-            updateOrderSummary(); // টোটাল প্রাইস আপডেট করুন
-            
-            // স্পিনার বন্ধ করুন (যদি কোথাও ওপেন থাকে)
+            updateOrderSummary(); 
             if(spinner) spinner.classList.add('hidden');
             toggle.disabled = false;
-            
-            return; // ফাংশন এখানেই শেষ করুন, নিচের সার্ভার কলে যাবে না
+            return; 
         }
 
-        // যদি ক্যাশ না থাকে, তবে নিচের সাধারণ প্রসেস (Server Call) শুরু হবে
-        toggle.checked = false; // টেম্পোরারিলি বন্ধ রাখুন লোডিংয়ের সময়
+        // যদি ক্যাশ না থাকে, তবে নিচের সার্ভার কল শুরু হবে
+        toggle.checked = false; 
         spinner.classList.remove('hidden');
         toggle.disabled = true;
 
@@ -3229,17 +3465,20 @@ function calculateCartTotal() {
                     appData.pointsDiscount = res.discount;
                     if(savingsLabel) savingsLabel.innerText = `Save ৳${res.discount.toFixed(2)}`;
                     
-                    // ==========================================
-                    // SAVE TO CACHE (ক্যাশে সেভ করুন)
-                    // ==========================================
-                    cachedPointsResult = { discount: res.discount }; // ডিসকাউন্ট অ্যামাউন্ট সেভ রাখুন
-                    lastPointsCartHash = currentHash;               // হ্যাশ সেভ রাখুন
-                    // ==========================================
-                    
+                    // সফল রেজাল্ট ক্যাশে সেভ
+                    cachedPointsResult = { discount: res.discount }; 
+                    lastPointsCartHash = currentHash;               
                     updateOrderSummary();
                 } else {
-                    // ... existing error handling ...
-                    // Custom Dynamic Message Logic (আপনার আগের কোড)
+                    // ==========================================
+                    // নতুন যোগ করা লজিক: ব্যর্থ রেজাল্টও ক্যাশে সেভ
+                    // যাতে পরের ক্লিকে সার্ভারে কল না যায়
+                    // ==========================================
+                    cachedPointsResult = { discount: 0, failed: true, error: res.error };
+                    lastPointsCartHash = currentHash;
+                    // ==========================================
+
+                    // Custom Dynamic Message Logic
                     if (res.error.includes("Minimum order not met")) {
                         const minAmount = appData.settings.minorderforpoints || 0;
                         const messageBn = `পয়েন্ট ডিসকাউন্ট ব্যবহার করতে হলে আপনাকে নূন্যতম ${minAmount} টাকার অর্ডার করতে হবে...`;
@@ -3924,7 +4163,7 @@ function buyNow(product, qty = 1) {
     let selectedVariantData = null;
     let finalPrice = parseFloat(product.discountprice || product.price);
 
-    // ভ্যারিয়েন্ট চেক
+    // ভ্যারিয়েন্ট চেক
     if (product.variants && product.variants.length > 0) {
         const activeBtn = document.querySelector('.variant-btn.active');
         if (!activeBtn) {
@@ -3955,7 +4194,6 @@ function buyNow(product, qty = 1) {
     } else {
         // ==========================================
         // গুরুত্বপূর্ণ: এখানে লিমিট চেক রিমুভ করা হয়েছে
-        // if (appData.cart.length >=5) return ... (লাইনটি ডিলিট করা হয়েছে)
         // ==========================================
         
         // === LOGIC: নতুন আইটেম সবার উপরে যোগ করা ===
@@ -4001,7 +4239,7 @@ function buyNow(product, qty = 1) {
             
             // FIX: Load the saved page number instead of always 1
             const savedPage = appData.allProductsCurrentPage || 1;
-            loadAllProductsSection(savedPage);
+            loadAllProductsSection(savedPage, false);
             
             document.getElementById('content').insertAdjacentHTML('beforeend', getFooterHTML());
 
@@ -4035,20 +4273,42 @@ function buyNow(product, qty = 1) {
             });
         }
 
-        function loadHeroSlider() {
-            const container = document.getElementById('sliderContainer');
-            const dots = document.getElementById('sliderDots');
-            if (!container || appData.banners.length === 0) return;
-            container.innerHTML = appData.banners.map((b, i) => `
-                <div class="hero-slide w-full shrink-0 relative cursor-pointer" onclick="handleBannerClick('${b.linktocategory}', '${b.redirecturl}')">
-                    <img src="${b.imageurl}" class="w-full h-auto object-cover bg-gray-200 aspect-video rounded-xl" loading="lazy">
-                </div>
-            `).join('');
-            dots.innerHTML = appData.banners.map((_, i) => `
-                <button onclick="scrollToSlide(${i})" class="w-2 h-2 rounded-full transition-colors ${i===0?'bg-[var(--primary-color)]':'bg-white/50'}"></button>
-            `).join('');
-            startSlider();
-        }
+function loadHeroSlider() {
+    const container = document.getElementById('sliderContainer');
+    const dots = document.getElementById('sliderDots');
+    if (!container || appData.banners.length === 0) return;
+    container.innerHTML = appData.banners.map((b, i) => `
+        <div class="hero-slide w-full shrink-0 relative cursor-pointer" onclick="handleBannerClick('${b.linktocategory}', '${b.redirecturl}')">
+            <img src="${b.imageurl}" class="w-full h-auto object-cover bg-gray-200 aspect-video rounded-xl" loading="lazy">
+        </div>
+    `).join('');
+    dots.innerHTML = appData.banners.map((_, i) => `
+        <button onclick="scrollToSlide(${i})" class="w-2 h-2 rounded-full transition-colors ${i===0?'bg-[var(--primary-color)]':'bg-white/50'}"></button>
+    `).join('');
+    
+    // ==========================================
+    // নতুন কোড: সোয়াইপ/স্ক্রল করলে ডট আপডেট করার লজিক
+    // ==========================================
+    container.addEventListener('scroll', function() {
+        // বর্তমানে কোন স্লাইডে আছে তা ক্যালকুলেট করা হচ্ছে
+        const scrollPosition = container.scrollLeft;
+        const slideWidth = container.clientWidth;
+        const activeIndex = Math.round(scrollPosition / slideWidth);
+        
+        // সব ডট থেকে আগের অ্যাক্টিভ কালার সরিয়ে ফেলা হচ্ছে এবং নতুন অ্যাক্টিভ ডটে কালার দেওয়া হচ্ছে
+        const allDots = document.getElementById('sliderDots').querySelectorAll('button');
+        allDots.forEach((dot, index) => {
+            if (index === activeIndex) {
+                dot.className = 'w-2 h-2 rounded-full transition-colors bg-[var(--primary-color)]';
+            } else {
+                dot.className = 'w-2 h-2 rounded-full transition-colors bg-white/50';
+            }
+        });
+    });
+    // ==========================================
+
+    startSlider();
+}
 
         function startSlider() {
             if (appData.sliderInterval) clearInterval(appData.sliderInterval);
@@ -4085,25 +4345,44 @@ function buyNow(product, qty = 1) {
             if (!container) return;
             
             // ==========================================
-            // UPDATED: EXTRACT UNIQUE MAIN CATEGORIES
+            // ১. শুধুমাত্র "istop = yes" থাকা ক্যাটাগরিগুলো ফিল্টার করা হচ্ছে
             // ==========================================
-            const allMainCats = appData.categories.map(c => c.categoryname.split(' > ')[0]);
+            const topCats = appData.categories.filter(c => c.istop === 'yes');
+            
+            // ২. ইউনিক মেইন ক্যাটাগরি বের করা (যেমন: "Electronics > Mobile" থেকে "Electronics")
+            const allMainCats = topCats.map(c => c.categoryname.split(' > ')[0]);
             const uniqueMainCats = [...new Set(allMainCats)];
             
-            // Map back to category objects to get images (using first match)
-            const cats = uniqueMainCats.map(mainName => appData.categories.find(c => c.categoryname === mainName || c.categoryname.startsWith(mainName + ' > '))).filter(c => c);
+            // ৩. ইমেজ পাওয়ার জন্য অবজেক্টে ম্যাপ করা
+            const cats = uniqueMainCats.map(mainName => topCats.find(c => c.categoryname === mainName || c.categoryname.startsWith(mainName + ' > '))).filter(c => c);
             
-            container.innerHTML = cats.slice(0, 4).map(c => {
-                const displayName = c.categoryname.split(' > ')[0];
-                return `
-                <div onclick="navigateTo('#category?name=${encodeURIComponent(displayName)}')" class="text-center cursor-pointer group">
-                    <div class="aspect-square rounded-xl overflow-hidden mb-2 border border-gray-100 group-hover:border-primary/30 transition">
-                        <img src="${c.categoryimageurl}" class="w-full h-full object-cover transform group-hover:scale-110 transition" loading="lazy">
-                    </div>
-                    <p class="text-xs font-bold text-gray-700 truncate">${displayName}</p>
+            // ৪. HTML তৈরি করা (আগের মতোই, তবে slice(0, 4) রিমুভ করা হয়েছে)
+        let html = cats.map(c => {
+            const displayName = c.categoryname.split(' > ')[0];
+            return `
+            <div onclick="navigateTo('#category?name=${encodeURIComponent(displayName)}')" class="text-center cursor-pointer group">
+                <div class="aspect-square rounded-xl overflow-hidden border border-gray-100 group-hover:border-primary/30 transition">
+                    <img src="${c.categoryimageurl}" class="w-full h-full object-cover transform group-hover:scale-110 transition" loading="lazy">
                 </div>
-                `;
-            }).join('');
+            </div>
+            `;
+        }).join('');
+            
+            // ==========================================
+            // ৫. মাঝে বরাবর এলাইনমেন্ট লজিক (Centering Last Row)
+            // যদি মোট ক্যাটাগরির সংখ্যা ৪ এর চেয়ে কম হয় অথবা ৪ দিয়ে ভাগ না যায়, 
+            // তবে বাকি ঘরগুলো অদৃশ্য (invisible) ডিভ দিয়ে ফিল করে দেওয়া হবে।
+            // এতে করে ক্যাটাগরিগুলো গ্রিডের মাঝখানে চলে আসবে।
+            // ==========================================
+            const remainder = cats.length % 4;
+            if (remainder > 0) {
+                const emptySpaces = 4 - remainder;
+                for (let i = 0; i < emptySpaces; i++) {
+                    html += `<div class="invisible"></div>`;
+                }
+            }
+            
+            container.innerHTML = html;
         }
 
         function loadFeaturedProducts() {
@@ -4594,6 +4873,7 @@ function loadCheckoutPage() {
             }
             
             if(appData.user && appData.user.currentpoints > 0) {
+                silentPointsRefresh();
                 if(toggle) toggle.disabled = false;
                 const ptsVal = (Number(appData.user.currentpoints) || 0) * (Number(appData.settings.pointvalue) || 1);
                 const maxD = Number(appData.settings.maxpointdiscountlimit);
@@ -4611,21 +4891,82 @@ function loadCheckoutPage() {
                 items: selectedItems.map(i => ({ item_id: i.id, item_name: i.name, variant: i.selectedVariant }))
             });
 
+            // ==========================================
+            // নতুন কোড: CART CHECKOUT CAPI TRACKING
+            // ==========================================
+            const cartCheckoutTotal = selectedItems.reduce((s, i) => s + ((i.price)*(i.quantity||i.qty)), 0);
+            const cartCheckoutEventId = generateEventId(); 
+            
+            fbq('track', 'InitiateCheckout', {
+                content_ids: selectedItems.map(i => String(i.id)),
+                content_type: 'product',
+                value: cartCheckoutTotal,
+                currency: 'BDT',
+                num_items: selectedItems.length
+            }, { eventID: cartCheckoutEventId }); 
+
+            trackCAPI('InitiateCheckout', {
+                content_ids: selectedItems.map(i => String(i.id)),
+                content_type: 'product',
+                value: cartCheckoutTotal,
+                currency: 'BDT',
+                num_items: selectedItems.length
+            }, cartCheckoutEventId); 
+            // ==========================================
+
             document.getElementById('checkoutName').value = appData.user.fullname;
             document.getElementById('checkoutPhone').value = appData.user.mobilenumber;
-            document.getElementById('checkoutAddress').value = appData.user.fulladdress || '';
+            
+            // ==========================================
+            // ১. লোকাল স্টোরেজ থেকে আগের সেভ করা ডাটা আনা হচ্ছে
+            // ==========================================
+            const savedDistrict = localStorage.getItem('cached_district') || appData.user.defaultdistrict || '';
+            const savedUpazila = localStorage.getItem('cached_upazila') || appData.user.defaultupazila || '';
+            const savedAddress = localStorage.getItem('cached_address') || appData.user.fulladdress || '';
+
             const distSelect = document.getElementById('checkoutDistrict');
             const upaSelect = document.getElementById('checkoutUpazila');
+            const addressInput = document.getElementById('checkoutAddress');
+            
             distSelect.innerHTML = '<option value="">' + t('Select District') + '</option>' + Object.keys(appData.locations).map(d => `<option value="${d}">${d}</option>`).join('');
-            if (appData.user.defaultdistrict) {
-                distSelect.value = appData.user.defaultdistrict;
-                populateUpazilas(appData.user.defaultdistrict);
-                setTimeout(() => upaSelect.value = appData.user.defaultupazila || '', 100);
+            
+            // সেভ করা জেলা থাকলে সেট করা
+            if (savedDistrict) {
+                distSelect.value = savedDistrict;
+                // জেলা সিলেক্ট করার সাথে সাথে উপজেলার লিস্ট তৈরি করা হচ্ছে
+                populateUpazilas(savedDistrict);
+                // উপজেলা লোড হতে ক্ষুদ্র সময় লাগে তাই setTimeout ব্যবহার করা হয়েছে
+                setTimeout(() => {
+                    upaSelect.value = savedUpazila;
+                }, 150);
+            } else {
+                populateUpazilas('');
             }
-            distSelect.onchange = () => populateUpazilas(distSelect.value);
+
+            // সেভ করা ঠিকানা ইনপুট বক্সে বসানো হচ্ছে
+            addressInput.value = savedAddress;
+
+            // ==========================================
+            // ২. নতুন কোড: টাইপ করার সাথে সাথে ব্রাউজারে সেভ হওয়া
+            // ==========================================
+            distSelect.addEventListener('change', function() {
+                localStorage.setItem('cached_district', this.value);
+                // জেলা পরিবর্তন হলে উপজেলা রিসেট হয়ে যাবে (কারণ নতুন জেলার অন্য উপজেলা হতে পারে)
+                localStorage.removeItem('cached_upazila');
+                populateUpazilas(this.value); // ← এই লাইনটি মিসিং ছিল
+            });
+
+            upaSelect.addEventListener('change', function() {
+                localStorage.setItem('cached_upazila', this.value);
+            });
+
+            addressInput.addEventListener('input', function() {
+                localStorage.setItem('cached_address', this.value);
+            });
+            // ==========================================
+
             updateCheckoutSummary();
         }
-        
         function populateUpazilas(dist) {
             const upaSelect = document.getElementById('checkoutUpazila');
             upaSelect.innerHTML = '<option value="">' + t('Select Upazila') + '</option>' + (appData.locations[dist] || []).map(u => `<option value="${u}">${u}</option>`).join('');
@@ -4741,11 +5082,20 @@ function placeOrder() {
         // ===========================================
 
         if (res.success) {
-            // === FACEBOOK PIXEL EVENT (Purchase) ===
-            fbq('track', 'Purchase', {
+            // === FACEBOOK PIXEL EVENT (Purchase + CAPI Sync) ===
+            const purchaseData = {
                 value: totalOrderValue, 
-                currency: 'BDT'
-            }, { eventID: res.orderId }); // এখানে eventID হিসেবে orderId পাস করুন
+                currency: 'BDT',
+                content_ids: selectedItems.map(item => String(item.id)),
+                content_type: 'product',
+                content_name: selectedItems[0]?.name || ''
+            };
+            
+            // ১. ব্রাউজার পিক্সেলে পাঠানো (eventID দিয়ে)
+            fbq('track', 'Purchase', purchaseData, { eventID: res.orderId }); 
+            
+            // ২. সার্ভারে পাঠানো (IP, UserAgent, Cookies সহ)
+            trackCAPI('Purchase', purchaseData, res.orderId); 
             // ============================================
 
             // কার্ট এবং অন্যান্য স্টেট ক্লিয়ার করা
@@ -4801,6 +5151,7 @@ function placeOrder() {
                 
                 const badge = document.getElementById('accountPtsBadge');
                 if(badge) badge.innerText = appData.user.currentpoints || 0;
+                silentPointsRefresh();
             }
         }
 
@@ -4909,6 +5260,97 @@ function handleSessionError() {
         }
     });
 }
+// ==========================================
+// SMART SILENT POINTS REFRESH (FIXED: NEW TAB LOGIC)
+// ==========================================
+function silentPointsRefresh() {
+    if (!appData.user || !appData.user.userid) return;
+    
+    // ==========================================
+    // FIX: NEW TAB DETECTION USING SESSIONSTORAGE
+    // ==========================================
+    let isNewTab = false;
+    try {
+        // চেক করুন এই ট্যাবে আগে পয়েন্ট সিঙ্ক হয়েছে কিনা
+        if (!sessionStorage.getItem('ptsSyncedThisTab')) {
+            isNewTab = true; // নতুন ট্যাব বা রিফ্রেশ করা হয়েছে
+            // এই ট্যাবে একবার সিঙ্ক হয়েছে তা মার্ক করে রাখা হচ্ছে
+            sessionStorage.setItem('ptsSyncedThisTab', 'true');
+        }
+    } catch (e) {}
+    // ==========================================
+
+    // ১. যদি নতুন ট্যাব হয়, তাহলে ২৪ ঘণ্টার থ্রটল ইগনোর করে সরাসরি নিচের সার্ভার কলে যাবে
+    if (!isNewTab) {
+        // ২. যদি একই ট্যাবে থাকে, তাহলে আগের মতোই ২৪ ঘণ্টা চেক করবে (localStorage দিয়ে)
+        let lastSyncTime = 0;
+        try {
+            const saved = localStorage.getItem('lastPointsSyncTime');
+            if (saved) lastSyncTime = parseInt(saved);
+        } catch (e) {}
+        
+        const timeSinceLastSync = Date.now() - lastSyncTime;
+        
+        // থ্রটল টাইম: ২৪ ঘণ্টা = ৮৬৪০০০০০ মিলিসেকেন্ড
+        const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+        
+        // যদি ২৪ ঘণ্টা পার হয়নি এবং একই ট্যাবে আছে, তাহলে কল ব্লক করো
+        if (lastSyncTime > 0 && timeSinceLastSync < TWENTY_FOUR_HOURS_MS) {
+            return; 
+        }
+    }
+    
+    // ৩. সার্ভারে যাওয়ার মূল কোড (এখানে কোনো পরিবর্তন করতে হবে না)
+    google.script.run
+        .withSuccessHandler(res => {
+            if (res.success) {
+                const oldPoints = Number(appData.user.currentpoints) || 0;
+                const newPoints = Number(res.currentpoints) || 0;
+                const newExpiry = res.pointsexpirydate || '';
+                
+                // পয়েন্টস পরিবর্তন হলে আপডেট করবে
+                if (oldPoints !== newPoints || appData.user.pointsexpirydate !== newExpiry) {
+                    appData.user.currentpoints = newPoints;
+                    appData.user.pointsexpirydate = newExpiry;
+                    localStorage.setItem('user', JSON.stringify(appData.user));
+                    
+                    // UI আপডেট
+                    const badge = document.getElementById('accountPtsBadge');
+                    if (badge) badge.innerText = newPoints;
+                    
+                    const toggle = document.getElementById('ptsToggle');
+                    const savingsLabel = document.getElementById('ptsSavingsLabel');
+                    if (toggle && savingsLabel) {
+                        if (newPoints > 0) {
+                            toggle.disabled = false;
+                            const ptsVal = newPoints * (Number(appData.settings.pointvalue) || 1);
+                            const maxD = Number(appData.settings.maxpointdiscountlimit) || 500;
+                            savingsLabel.innerText = `Save up to ৳${Math.min(ptsVal, maxD).toFixed(0)}`;
+                        } else {
+                            toggle.disabled = true;
+                            toggle.checked = false;
+                            savingsLabel.innerText = 'No Points';
+                        }
+                    }
+                    
+                    console.log(`Points updated: ${oldPoints} → ${newPoints}`);
+                }
+                
+                // সময় সেভ করো (একই ট্যাবে পুনরায় কল রোধ করতে)
+                try {
+                    localStorage.setItem('lastPointsSyncTime', Date.now().toString());
+                } catch (e) {}
+            }
+        })
+        .withFailureHandler(err => {
+            // এরর হলেও সময় সেভ করে দিবো
+            try {
+                localStorage.setItem('lastPointsSyncTime', Date.now().toString());
+            } catch (e) {}
+            console.warn("Points sync failed:", err);
+        })
+        .getLatestUserPoints(appData.user.userid);
+}
         function performLogin() {
             const id = document.getElementById('loginIdentifier').value.trim();
             const pass = document.getElementById('loginPassword').value.trim();
@@ -4927,6 +5369,7 @@ function handleSessionError() {
                     // ==========================================
                     
                     localStorage.setItem('user', JSON.stringify(res.user)); 
+                    silentPointsRefresh();
                     navigateTo('#account'); 
                 }
                 else { Swal.fire('Error', res.error, 'error'); }
@@ -5498,7 +5941,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by MixBoxbd Team
+                        <br>Developed by SafaBoxbd Team
                     </div>
                 </div>
             </footer>`;
@@ -6151,24 +6594,40 @@ function generateEventId() {
     return 'evt_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 }
 
-// মূল ট্র্যাকার ফাংশন
-// ==========================================
-// NEW: FETCH API VERSION FOR CAPI (GitHub Fix)
-// ==========================================
-async function trackCAPI(eventName, customData, productId) {
+async function trackCAPI(eventName, customData, eventId) {
+    
+    // ==========================================
+    // টায়ার ১: LOW PRIORITY (শুধু ব্রাউজার পিক্সেলে থাকবে)
+    // কারণ: পরিমাণ অনেক বেশি (৩০০০+), রিটার্গেটিং ভ্যালু কম
+    // ==========================================
+    if (eventName === 'ViewContent' || eventName === 'PageView') {
+        console.log("%c[CAPI Skipped] Low priority event.", "color: gray;", eventName);
+        return; 
+    }
+
+    // ==========================================
+    // টায়ার ২: MEDIUM & HIGH PRIORITY (সবসময় সার্ভারে যাবে)
+    // কারণ: AddToCart ও Purchase এর পরিমাণ কম (১০০-২০০), রিটার্গেটিং ভ্যালু অনেক বেশি
+    // অ্যাডব্লকার থাকলেও এরা সার্ভারে যাবে কারণ Fetch API ব্লক করে না
+    // ==========================================
+    // (আমরা আর fbc কুকি চেক করছি না, সরাসরি পাঠিয়ে দিচ্ছি)
+    
+    // ==========================================
+    // IP এবং পেলোড তৈরি
+    // ==========================================
     let clientIp = null;
     try {
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
         if (ipData.ip) clientIp = ipData.ip;
-    } catch (e) { console.warn("IP fetch failed"); }
+    } catch (e) { 
+        console.warn("IP fetch failed"); 
+    }
 
     const clientUserAgent = navigator.userAgent;
-    const fbc = getFbcCookie();
+    const fbc = getFbcCookie(); 
     const fbp = getFbpCookie();
     
-    // NEW: Direct fetch call instead of google.script.run polyfill for specific server-side tracking
-    // Backend doPost expects { functionName: '...', arguments: [...] }
     const payload = {
         functionName: 'trackFacebookServerEvent',
         arguments: [
@@ -6178,25 +6637,21 @@ async function trackCAPI(eventName, customData, productId) {
             appData.user?.mobilenumber || null,
             clientIp,
             clientUserAgent,
-            fbc,
+            fbc, 
             fbp,
-            productId,
-            null // testEventCode
+            eventId, 
+            null
         ]
     };
 
     try {
-        const response = await fetch(GAS_WEB_APP_URL, {
+        await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             mode: 'cors',
-            headers: {
-                'Content-Type': 'text/plain;charset=utf-8' // Match backend expectation
-            },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         });
-        // We don't necessarily need to wait for the response, just fire and forget mostly
-        // but logging is good for debug.
-        console.log("CAPI Fired via Fetch:", eventName);
+        console.log("%c[CAPI Fired]", "color: green; font-weight: bold;", eventName);
     } catch (err) {
         console.error("CAPI Fetch Error:", err);
     }
