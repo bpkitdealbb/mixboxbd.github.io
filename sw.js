@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SafaBoxbd-v5'; // ভার্সন চেঞ্জ করেছি (v1 থেকে v2)
+const CACHE_NAME = 'SafaBoxbd-v3'; // ভার্সন চেঞ্জ করেছি (v1 থেকে v2)
 
 const ASSETS = [
   './',
@@ -6,7 +6,7 @@ const ASSETS = [
   './manifest.json'
 ];
 
-// ১. ইন্সটল ইভেন্ট করল
+// ১. ইন্সটল ইভেন্ট
 self.addEventListener('install', (e) => {
   // নতুন সার্ভিস ওয়ার্কার ডাউনলোড হলে সাথে সাথে অ্যাক্টিভ হবে (waiting থাকবে না)
   self.skipWaiting(); 
@@ -39,6 +39,17 @@ self.addEventListener('activate', (e) => {
 
 // ৩. ফেচ ইভেন্ট (ক্যাশ থেকে লোড করবে, না থাকলে সার্ভার থেকে)
 self.addEventListener('fetch', (e) => {
+  // গুগল অ্যাপস স্ক্রিপ্ট বা API এর URL ক্যাশ বাইপাস করার জন্য লজিক
+  if (e.request.url.includes('script.google.com') || e.request.url.includes('action=')) {
+    e.respondWith(
+      fetch(e.request).catch(() => {
+        console.log('API Fetch failed. Offline?');
+      })
+    );
+    return; // API রিকোয়েস্ট হলে এখানেই শেষ, ক্যাশে যাবে না
+  }
+
+  // স্ট্যাটিক ফাইলের জন্য আগের "Cache First" লজিক
   e.respondWith(
     caches.match(e.request).then((cachedResponse) => {
       return cachedResponse || fetch(e.request);
