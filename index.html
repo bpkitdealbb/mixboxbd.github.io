@@ -19,6 +19,13 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N74T65FH7X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N74T65FH7X');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MixBoxbd | A Budget Friendly Variety Store</title> <!-- Default Title, will be updated by JS -->
@@ -27,7 +34,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     <!-- নতুন ফেভিকন ও ডেসক্রিপশন -->
     <!-- ========================================== -->
     
-    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dkowkawiq/image/upload/v1781534517/134354_qrjim2.webp">
+    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dkowkawiq/image/upload/v1783075015/20260703_163558_tmym5q.webp">
     
     <meta name="description" content="একটি আধুনিক ও ট্রেন্ডি ভ্যারাইটি শপ, আমরা ইনসাফ ভিত্তিক ব্যবসা পরিচালনায় সচেষ্ট। সাশ্রয়ী মূল্য এবং গুণগত মানের নিশ্চয়তায় সেরা অনলাইন শপিং অভিজ্ঞতা প্রদানে দৃঢ় প্রতিজ্ঞাবদ্ধ">
 
@@ -37,6 +44,16 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     <meta name="theme-color" content="#006a4e">
 <script>
   if ('serviceWorker' in navigator) {
+    let refreshing = false; // ইনফিনিট লুপ রোধ করার জন্য
+    
+    // যখন ব্যাকগ্রাউন্ডে নতুন SW আপডেট হবে, তখন এই ইভেন্ট ফায়ার হবে
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return; 
+      refreshing = true;
+      console.log("New Service Worker detected. Reloading...");
+      window.location.reload(); // ইউজারের অজান্তেই পেজ রিফ্রেশ হয়ে যাবে
+    });
+
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
         .then(reg => console.log('Service Worker Registered!', reg))
@@ -288,16 +305,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
 }
     </style>
     
-    <!-- GA4 -->
-    <? const gaId = getSettings().ga4measurementid; if(gaId){ ?>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= gaId ?>"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '<?= gaId ?>');
-    </script>
-    <? } ?>
+
 </head>
 <body class="bg-background text-gray-800 font-sans antialiased">
 
@@ -1685,7 +1693,11 @@ function instantScrollFix() {
                     if (!localVersion || localVersion !== serverVersion || !cachedDataStr) {
                         console.log("%c[Server Fetch] New version detected! Fetching fresh data...", "color: blue; font-weight: bold;");
                         
-                        fetch(GAS_WEB_APP_URL + '?action=getInitialData')
+// রিকোয়েস্টের সাথে বর্তমান সময় জুড়ে দেওয়া হলো (Cache-Busting)
+const timestamp = new Date().getTime();
+fetch(`${GAS_WEB_APP_URL}?action=getInitialData&t=${timestamp}`, { 
+    cache: "no-store" 
+})
                             .then(response => response.json())
                             .then(res => {
                                 if (res.success) {
@@ -1745,26 +1757,28 @@ function instantScrollFix() {
         // ==========================================
         // NEW HELPER: UPDATE DOM ELEMENTS DYNAMICALLY
         // ==========================================
-        function updateDOMWithSettings(settings) {
-            if(!settings) return;
-            // 1. Title
-            document.title = settings.sitename || 'E-commerce Store';
-            
-            // 2. Logo
-            const logoEl = document.getElementById('siteLogo');
-            if(logoEl && settings.sitelogo) {
-                logoEl.src = settings.sitelogo;
-            }
+function updateDOMWithSettings(settings) {
+    if(!settings) return;
+    
+    // ১. সাইটের নাম পরিবর্তন
+    document.title = settings.sitename || 'E-commerce Store';
+    
+    // ২. সাইটের লোগো পরিবর্তন
+    const logoEl = document.getElementById('siteLogo');
+    if(logoEl && settings.sitelogo) {
+        logoEl.src = settings.sitelogo;
+    }
 
-            // 3. CSS Variables (Colors)
-            const root = document.documentElement;
-            if(settings.themecolor) {
-                root.style.setProperty('--primary-color', settings.themecolor);
-            }
-            if(settings.bgcolor) {
-                root.style.setProperty('--bg-color', settings.bgcolor);
-            }
-        }
+    // ৩. সাইটের কালার পরিবর্তন
+    const root = document.documentElement;
+    if(settings.themecolor) {
+        root.style.setProperty('--primary-color', settings.themecolor);
+    }
+    if(settings.bgcolor) {
+        root.style.setProperty('--bg-color', settings.bgcolor);
+    }
+}
+
 
         // ================= HELPER FUNCTIONS =================
         function t(key) {
@@ -5941,7 +5955,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by SafaBoxbd Team
+                        <br>Developed by safaboxbd team
                     </div>
                 </div>
             </footer>`;
