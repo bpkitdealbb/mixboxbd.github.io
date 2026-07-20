@@ -51,12 +51,17 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
       if (refreshing) return; 
       refreshing = true;
       console.log("New Service Worker detected. Reloading...");
-      window.location.reload(); // ইউজারের অজান্তেই পেজ রিফ্রেশ হয়ে যাবে
+      window.location.reload(); // ইউজারের অজান্তেই পেজ রিফ্রেশ হয়ে যাবে
     });
 
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker Registered!', reg))
+        .then(reg => {
+            console.log('Service Worker Registered!', reg);
+            
+            // ✅ এই লাইনটি যোগ করুন (পুরোনো SW থাকলে আপডেট হওয়ে যাওয়ার জন্য)
+            reg.update(); 
+        })
         .catch(err => console.log('Service Worker Error', err));
     });
   }
@@ -295,6 +300,134 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     width: 100%;             /* পুরো জায়গা নেবে */
     line-height: 1.4;
 }
+.cart-section-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 2px}
+.cart-section-header i{font-size:14px;color:#6b7280}
+.cart-section-header span{font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.5px}
+.cart-section-divider{height:1px;background:#e5e7eb;margin:0 0 10px 0}
+
+.cart-empty-state{text-align:center;padding:35px 20px 25px}
+.cart-empty-icon{width:76px;height:76px;margin:0 auto 14px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cart-empty-icon i{font-size:30px;color:#d1d5db}
+.cart-empty-state h3{font-size:15px;font-weight:700;color:#374151;margin-bottom:5px}
+.cart-empty-state p{font-size:12px;color:#9ca3af;margin-bottom:18px}
+.cart-btn-start{background:#111827;color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.cart-btn-start:hover{background:#000;transform:translateY(-1px)}
+.cart-btn-start:active{transform:scale(.97)}
+/* ==========================================
+   PERCENTAGE (%) INSIDE TICKET ICON
+   (কার্ট পেজ এবং হেডার উভয় জায়গার জন্য)
+   ========================================== */
+.cart-section-header i,
+#headerCouponBtn i {
+    position: relative; 
+}
+
+.cart-section-header i::after,
+#headerCouponBtn i::after {
+    content: '%'; 
+    position: absolute;
+    left: 50%;         
+    top: 50%;          
+    transform: translate(-50%, -50%); /* একদম মাঝখানে */
+    font-weight: 900;  
+    color: #ffffff;
+    font-family: sans-serif; 
+    line-height: 1;
+}
+
+/* হেডারের আইকনটি একটু ছোট হবে */
+#headerCouponBtn i::after {
+    font-size: 7px;    
+}
+
+/* কার্ট পেজের আইকনটি একটু বড় হবে */
+.cart-section-header i::after {
+    font-size: 9px;    
+}
+/* ==========================================
+   UPDATED: COUPON CARD - Locked Left & Right
+   ========================================== */
+.coupon-new-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:11px 13px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:10px;transition:box-shadow .2s}
+/* ==========================================
+   VIP / SPECIAL COUPON STYLE
+   ========================================== */
+.coupon-vip-card {
+    border: 2px solid #f59e0b !important; /* Golden Border */
+    background: linear-gradient(135deg, #fffbeb 0%, #fff 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+.coupon-vip-card::before {
+    content: 'for you';
+    position: absolute;
+    top: 10px;
+    right: -25px;
+    background: #f59e0b;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 30px;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.coupon-new-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+
+/* Row 1: Absolute alignment (Code Left, Button Right) */
+.coupon-new-row1{display:flex;align-items:center;justify-content:space-between;width:100%}
+.coupon-new-code{min-width:100px;background:#ecfff1;border:1px solid #bfe8c9;border-radius:6px;text-align:center;font-size:14px;font-weight:700;color:#111;padding:5px 8px;letter-spacing:.5px;flex-shrink:0;margin-right:auto}
+.coupon-new-spacer{display:none} 
+.coupon-new-apply{background:#111827;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;flex-shrink:0;white-space:nowrap;margin-left:auto}
+.coupon-new-apply:hover{background:#000}
+
+/* Row 2: Offer Badges (Centered, Smaller) */
+.coupon-new-offers{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:8px}
+.coupon-new-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;line-height:1.3}
+
+/* কন্টেন্ট না থাকলে ব্যাজটি পুরোপুরি গায়েব হয়ে যাবে */
+.coupon-new-badge:empty{display:none !important} 
+
+.coupon-new-badge.disc{background:#e8f8ea;color:#16803c}
+.coupon-new-badge.del-partial{background:#ebf3ff;color:#2563eb}
+.coupon-new-badge.del-free{background:#e8f8ea;color:#15803d}
+.coupon-new-badge i{font-size:7px}
+
+.coupon-new-row2{margin-top:8px;padding-top:7px;border-top:1px solid #f3f4f6;display:flex;justify-content:center;gap:12px;font-size:11px;color:#9ca3af;flex-wrap:wrap}
+.coupon-new-row2 b{color:#374151}
+.coupon-new-row3{margin-top:7px;padding-top:7px;border-top:1px solid #f3f4f6;font-size:12px;color:#6b7280;text-align:center;line-height:1.7}
+.coupon-new-row3 strong{color:#374151}
+
+/* Applied State */
+.coupon-new-card.applied{border-color:#86efac;background:#f0fdf4}
+.coupon-new-card.applied .coupon-new-code{background:#bbf7d0;border-color:#86efac}
+.coupon-new-card.applied .coupon-new-apply{display:none}
+.coupon-new-applied-badge{display:none;align-items:center;gap:4px;background:#16a34a;color:#fff;font-size:11px;font-weight:600;padding:7px 11px;border-radius:8px;flex-shrink:0;margin-left:auto}
+.coupon-new-card.applied .coupon-new-applied-badge{display:flex}
+
+/* ==========================================
+   RECOMMENDATION CARDS
+   ========================================== */
+.rec-new-card{background:#fff;border:1px solid #d1fae5;border-radius:12px;padding:11px;display:flex;gap:10px;align-items:center;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:.2s}
+.rec-new-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.rec-new-img{width:54px;height:54px;border-radius:8px;object-fit:cover;border:1px solid #e5e7eb;flex-shrink:0;background:#f9fafb}
+.rec-new-info{flex:1;min-width:0}
+.rec-new-name{font-size:12px;font-weight:600;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-new-cat{font-size:10px;color:#9ca3af;margin-top:1px}
+.rec-new-price-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+.rec-new-price{font-size:13px;font-weight:700;color:var(--primary-color,#006a4e)}
+.rec-new-old{font-size:11px;color:#9ca3af;text-decoration:line-through}
+.rec-new-save{font-size:9px;font-weight:700;color:#16a34a;background:#dcfce7;padding:1px 5px;border-radius:4px}
+.rec-new-free{font-size:9px;font-weight:600;color:#16a34a;display:flex;align-items:center;gap:2px;margin-top:3px}
+.rec-new-btn{background:var(--primary-color,#006a4e);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;flex-shrink:0;white-space:nowrap}
+.rec-new-btn:hover{opacity:.9}
+.rec-new-btn.added{background:#16a34a;pointer-events:none}
+
+@media(max-width:380px){
+    .coupon-new-code{min-width:88px;font-size:12px;padding:4px 6px}
+    .coupon-new-badge{font-size:8px;padding:1px 5px;gap:2px}
+    .coupon-new-badge i{font-size:6px}
+    .coupon-new-apply{padding:6px 9px;font-size:10px}
+    .coupon-new-row2{gap:8px;font-size:10px}
+}
 
 /* ভ্যারিয়েন্টের স্টাইল: নিচের লাইনে */
 .cart-variant-text {
@@ -312,12 +445,24 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     <!-- Skeleton Loader -->
     <div id="skeletonLoader" class="fixed inset-0 bg-white z-50 flex flex-col h-screen overflow-y-auto no-scrollbar">
         
-        <!-- ১. হেডার -->
-        <div class="h-16 border-b border-gray-100 flex items-center px-4 shrink-0 bg-white">
-            <div class="w-10 h-10 bg-gray-200 rounded-full style-sweep"></div>
-            <div class="w-36 h-6 bg-gray-200 rounded-lg ml-3 style-sweep"></div>
-            <div class="ml-auto w-10 h-10 bg-gray-200 rounded-full style-sweep"></div>
-        </div>
+<!-- ১. হেডার (আপডেটেড: মাঝখানে লোগো, দুইপাশে ২টি করে আইকন) -->
+<div class="h-16 border-b border-gray-100 flex items-center px-4 shrink-0 bg-white relative">
+    
+    <!-- বাম পাশের ২টি আইকনের জায়গা -->
+    <div class="absolute left-4 flex items-center space-x-2">
+        <div class="w-8 h-8 bg-gray-200 rounded-full style-sweep"></div>
+        <div class="w-12 h-8 bg-gray-200 rounded-full style-sweep"></div>
+    </div>
+    
+    <!-- মাঝখানে লোগোর জায়গা -->
+    <div class="w-32 h-10 bg-gray-200 rounded-lg mx-auto style-sweep"></div>
+    
+    <!-- ডান পাশের ২টি আইকনের জায়গা -->
+    <div class="absolute right-4 flex items-center space-x-4">
+        <div class="w-8 h-8 bg-gray-200 rounded-full style-sweep"></div>
+        <div class="w-8 h-8 bg-gray-200 rounded-full style-sweep"></div>
+    </div>
+</div>
         
         <!-- ২. হিরো স্লাইডার -->
         <div class="w-full h-64 bg-gray-200 shrink-0 style-sweep"></div>
@@ -389,29 +534,37 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     <div id="app" class="hidden min-h-screen flex flex-col relative">
         
         <!-- Header -->
-        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm shadow-sm border-b shrink-0">
-            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-                <div onclick="navigateTo('#home')" class="flex items-center space-x-3 overflow-hidden cursor-pointer">
-<div onclick="navigateTo('#home')" class="flex items-center cursor-pointer">
-  
-  <!-- Bigger Logo: src খালি রাখা হয়েছে, JS লোড হলে সেট হবে -->
-  <img id="siteLogo" 
-       src="https://via.placeholder.com/150" 
-       alt="Logo" 
-       class="h-12 w-auto object-contain shrink-0" 
-       style="mix-blend-mode: multiply;">
-  
+<header class="sticky top-0 z-40 bg-white shadow-sm shrink-0">
+<div class="container mx-auto px-4 py-2 relative flex items-center justify-center">
+    
+    <!-- ========================================== -->
+    <!-- বাম পাশের আইকন (z-10 যোগ করা হয়েছে) -->
+    <!-- ========================================== -->
+    <div class="absolute left-4 z-10 flex items-center space-x-2">
+<!-- কুপন আইকন (ট্র্যাক অর্ডারের বদলে) -->
+<button onclick="goToCoupons()" id="headerCouponBtn" class="text-gray-600 hover:text-primary transition" title="View Offers">
+    <i class="fas fa-ticket-alt text-lg"></i>
+</button>
+        
+        <!-- ল্যাঙ্গুয়েজ টগল বাটন -->
+<button onclick="changeLanguage()" id="headerLangBtn" class="flex items-center gap-1 rounded-full px-2.5 py-1 transition text-gray-700 hover:text-primary">
+    <i class="fas fa-globe text-sm text-gray-500"></i>
+    <span id="headerLangText" class="text-[12px] font-bold">EN</span>
+</button>
+    </div>
+    <!-- ========================================== -->
+
+    <!-- লোগো (মাঝখানে) -->
+    <div onclick="navigateTo('#home')" class="flex items-center cursor-pointer max-w-[60%]">
+        <img id="siteLogo" src="https://via.placeholder.com/150" alt="Logo" class="h-12 w-auto object-contain shrink-0 mx-auto" style="mix-blend-mode: multiply;">
+    </div>
+    
+    <!-- ডান পাশের আইকন (z-10 যোগ করা হয়েছে) -->
+    <div class="absolute right-4 z-10 flex items-center space-x-4">
+        <button onclick="toggleFilter()" class="text-gray-600 hover:text-primary transition"><i class="fas fa-filter text-lg"></i></button>
+        <button onclick="toggleSearch()" class="text-gray-600 hover:text-primary transition"><i class="fas fa-search text-lg"></i></button>
+    </div>
 </div>
-<!--<h1 id="siteName" class="text-xl text-primary truncate" style="font-family: 'Bungee', cursive; opacity: 0;">
-</h1>-->
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- NEW: Filter Icon -->
-                    <button onclick="toggleFilter()" class="text-gray-600 hover:text-primary transition"><i class="fas fa-filter text-lg"></i></button>
-                    <!-- Search Icon -->
-                    <button onclick="toggleSearch()" class="text-gray-600 hover:text-primary transition"><i class="fas fa-search text-lg"></i></button>
-                </div>
-            </div>
             
             <!-- NEW SEARCH BAR SNIPPET -->
             <div id="searchBar" class="hidden border-t bg-white px-4 py-2 animate-fade-in absolute top-14 left-0 right-0 shadow-lg z-50">
@@ -429,7 +582,7 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
         <main id="content" class="flex-1 container mx-auto px-4 py-4"></main>
         
         <!-- Bottom Nav -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40">
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-sm z-40">
             <div class="flex justify-around items-center h-16">
                 <button onclick="navigateTo('#home')" id="nav-home" class="flex flex-col items-center justify-center w-full text-gray-500 transition-all duration-200"><i class="fas fa-home text-xl mb-1"></i><span class="text-[10px] font-medium">Home</span></button>
                 <button onclick="navigateTo('#categories')" id="nav-categories" class="flex flex-col items-center justify-center w-full text-gray-500 transition-all duration-200"><i class="fas fa-th-large text-xl mb-1"></i><span class="text-[10px] font-medium">Categories</span></button>
@@ -821,46 +974,65 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
         </div>
     </template>
 
-    <template id="cartPageTemplate">
-        <!-- Added pb-16 -->
-        <div class="animate-fade-in pb-16">
-            <h1 class="text-2xl font-bold mb-6" data-i18n="cart">Shopping Cart</h1>
-            <div id="cartPageItems" class="space-y-4"></div>
-            <div id="emptyCart" class="hidden flex flex-col items-center justify-center py-12 text-center">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4"><i class="fas fa-shopping-basket text-3xl text-gray-300"></i></div>
-                <h3 class="font-bold text-gray-600" data-i18n="empty_cart_msg">Your cart is empty</h3>
-                <button onclick="navigateTo('#home')" class="mt-4 px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold" data-i18n="start_shopping">Start Shopping</button>
+<template id="cartPageTemplate">
+    <div class="animate-fade-in pb-16">
+        <h1 class="text-2xl font-bold mb-6" data-i18n="cart">Shopping Cart</h1>
+        <div id="cartPageItems" class="space-y-4"></div>
+        
+        <div id="emptyCart" class="hidden cart-empty-state">
+            <div class="cart-empty-icon"><i class="fas fa-shopping-basket"></i></div>
+            <h3 data-i18n="empty_cart_msg">Your cart is empty</h3>
+            <button onclick="navigateTo('#home')" class="cart-btn-start" data-i18n="start_shopping">Start Shopping</button>
+        </div>
+        
+        <div id="cartSummary" class="hidden bg-white rounded-xl shadow-sm border p-4 mt-6 space-y-2">
+            <div class="space-y-1 text-sm">
+                <div class="flex justify-between text-gray-600"><span data-i18n="subtotal">Subtotal</span> <span id="pageSubtotal" class="font-medium">৳ 0</span></div>
+                <div class="flex justify-between text-gray-600"><span data-i18n="delivery">Delivery</span> <span id="pageDelivery" class="font-medium">৳ 0</span></div>
+                <div id="pageProdDiscContainer" class="flex justify-between text-green-600 hidden"><span data-i18n="product_discount">Product Discount</span> <span id="pageProdDisc">-৳ 0</span></div>
+                <div id="pageDelDiscContainer" class="flex justify-between text-green-600 hidden"><span data-i18n="delivery_discount">Delivery Discount</span> <span id="pageDelDisc">-৳ 0</span></div>
+                <div id="pagePtsDiscContainer" class="flex justify-between text-purple-600 hidden"><span data-i18n="points_discount">Points Discount</span> <span id="pagePtsDisc">-৳ 0</span></div>
+                <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2"><span data-i18n="total">Total</span> <span id="pageTotal" class="text-primary">৳ 0</span></div>
             </div>
-            <div id="cartSummary" class="hidden bg-white rounded-xl shadow-sm border p-4 mt-6 space-y-2">
-                <div class="flex justify-between text-sm text-gray-600"><span data-i18n="subtotal">Subtotal</span> <span id="pageSubtotal" class="font-medium">৳ 0</span></div>
-                <div class="flex justify-between text-sm text-gray-600"><span data-i18n="delivery">Delivery</span> <span id="pageDelivery" class="font-medium">৳ 0</span></div>
-                
-                <!-- UPDATED: Separate Discounts -->
-                <div id="pageProdDiscContainer" class="flex justify-between text-sm text-green-600 hidden">
-                    <span data-i18n="product_discount">Product Discount</span> 
-                    <span id="pageProdDisc">-৳ 0</span>
-                </div>
-                <div id="pageDelDiscContainer" class="flex justify-between text-sm text-green-600 hidden">
-                    <span data-i18n="delivery_discount">Delivery Discount</span> 
-                    <span id="pageDelDisc">-৳ 0</span>
-                </div>
-                 <!-- NEW: Points Discount -->
-                 <div id="pagePtsDiscContainer" class="flex justify-between text-sm text-purple-600 hidden">
-                    <span data-i18n="points_discount">Points Discount</span> 
-                    <span id="pagePtsDisc">-৳ 0</span>
-                </div>
-                <!-- End Update -->
-
-                <div class="border-t pt-2 flex justify-between text-lg font-bold"><span data-i18n="total">Total</span> <span id="pageTotal" class="text-primary">৳ 0</span></div>
-                <div class="flex mt-4">
-                    <input type="text" id="pageCouponCode" placeholder="Coupon Code" class="flex-1 px-3 py-2 border rounded-l-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary">
-                    <button onclick="handleApplyCouponFromPage()" class="bg-gray-800 text-white px-4 py-2 rounded-r-lg text-sm font-medium" data-i18n="apply">Apply</button>
-                </div>
-                <div id="pageCouponMessage" class="text-xs"></div>
-                <button onclick="proceedToCheckout()" class="w-full bg-primary text-white py-3 rounded-lg font-bold mt-2 hover:opacity-90 shadow-lg" data-i18n="checkout">Checkout</button>
+            <div class="flex mt-4">
+                <input type="text" id="pageCouponCode" placeholder="Coupon Code" class="flex-1 px-3 py-2 border rounded-l-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary">
+                <button onclick="handleApplyCouponFromPage()" class="bg-gray-800 text-white px-4 py-2 rounded-r-lg text-sm font-medium" data-i18n="apply">Apply</button>
+            </div>
+            <div id="pageCouponMessage" class="text-xs"></div>
+            <button onclick="proceedToCheckout()" class="w-full bg-primary text-white py-3 rounded-lg font-bold mt-2 hover:opacity-90 shadow-lg" data-i18n="checkout">Checkout</button>
+        </div>
+        
+        <!-- COUPONS: আলাদা div, summary এর বাইরে -->
+        <div id="cartCouponsSection" class="hidden mt-6">
+            <div class="cart-section-header">
+                <i class="fas fa-ticket-alt"></i>
+                <span data-i18n="available_coupons">Available Coupons</span>
+            </div>
+            <div class="cart-section-divider"></div>
+            <div id="cartCouponsList" class="space-y-3"></div>
+            <div id="cartNoCouponsMsg" class="hidden text-center py-4">
+                <p class="text-gray-400 text-sm" data-i18n="no_coupons">No coupons available right now.</p>
             </div>
         </div>
-    </template>
+        
+        <!-- RECOMMENDATIONS: আলাদা div, summary এর বাইরে -->
+        <div id="cartRecommendationsSection" class="hidden mt-6">
+            <div class="cart-section-header">
+                <i class="fas fa-truck-fast"></i>
+                <span id="cartRecTitle">Add this product with the same delivery charge!</span>
+            </div>
+            <div class="cart-section-divider"></div>
+            <div id="cartRecommendationFirst"></div>
+            <div id="cartSeeMoreBtnContainer" class="text-center mt-3">
+                <button id="cartSeeMoreBtn" onclick="toggleCartRecommendations()" class="inline-flex items-center text-green-700 text-[11px] font-bold underline hover:text-green-900 transition">
+                    <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                    <span id="cartSeeMoreText">See More</span>
+                </button>
+            </div>
+            <div id="cartRecommendationMore" class="hidden space-y-2 mt-3"></div>
+        </div>
+    </div>
+</template>
 
     <template id="checkoutTemplate">
         <!-- Added pb-16 -->
@@ -1196,65 +1368,78 @@ src="https://www.facebook.com/tr?id=1526489362525698&ev=PageView&noscript=1"
     // VERCEL/NETLIFY HOSTING HELPER (POLYFILL FOR GOOGLE.SCRIPT.RUN)
     // ============================================================
     // নিচে আপনার Google Apps Script-এর বর্তমান Web App URL-টি বসিয়ে দিন:
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcE_psVFSOf1rXMvswwvpBZzhM4rBdkp6dy2SwoArZPup6IcLkOzYpO3Eft8eO198/exec"; 
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxLYBY47zdC7iEqBq4c5wvH-vqVq3TTuMBCM3aZptxUWFUz_9MA-jxf1E3v-HrHR6Nb/exec"; 
 
-    if (typeof google === 'undefined' || !google.script) {
-        window.google = {
-            script: {
-                run: (() => {
-                    let successHandler = (res) => console.log("Success:", res);
-                    let failureHandler = (err) => console.error("Failure:", err);
-
-                    const handlerChain = {
+// ✅ সঠিক পলিফিল (Proxy Chain ভাঙে না, Handler আলাদা থাকে)
+if (typeof google === 'undefined' || !google.script) {
+    window.google = {
+        script: {
+            run: (() => {
+                
+                // প্রতিটি চেইনের জন্য নতুন Proxy তৈরি করে এই ফাংশন
+                function createChain(successCb, failureCb) {
+                    // এই চেইনের নিজস্ব হ্যান্ডলার (ক্লোজারে আটকা আছে)
+                    const mySuccess = successCb || ((res) => console.log("Success:", res));
+                    const myFailure = failureCb || ((err) => console.error("Failure:", err));
+                    
+                    const chainMethods = {
                         withSuccessHandler: function(callback) {
-                            successHandler = callback;
-                            return this;
+                            // নতুন Proxy তৈরি হচ্ছে, আগেরটা অপরিবর্তিত থাকছে
+                            return createChain(callback, myFailure);
                         },
                         withFailureHandler: function(callback) {
-                            failureHandler = callback;
-                            return this;
+                            // নতুন Proxy তৈরি হচ্ছে, আগেরটা অপরিবর্তিত থাকছে
+                            return createChain(mySuccess, callback);
                         }
                     };
-
-                    return new Proxy(handlerChain, {
+                    
+                    // নতুন Proxy রিটার্ন করা হচ্ছে (সাধারণ অবজেক্ট নয়!)
+                    return new Proxy(chainMethods, {
                         get: function(target, prop) {
                             if (prop in target) {
                                 return target[prop];
                             }
-
+                            // placeOrder, getUserOrders ইত্যাদি ফাংশন কল হলে এখানে আসে
                             return function(...args) {
-                                // Vercel থেকে Apps Script-এ ডাটা পাঠানোর জন্য Fetch API
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
-                    body: JSON.stringify({
-                        functionName: prop,
-                        arguments: args
-                    })
-                })
-                .then(response => response.json())
-                .then(res => {
-                    // ✅ শুধুমাত্র successHandler-এ পাঠিয়ে দিন। 
-                    // এখন থেকে সব ডাটা সঠিক জায়গায় যাবে।
-                    successHandler(res);
-                })
+                                // শুধুমাত্র এই চেইনের হ্যান্ডলার ক্যাপচার হচ্ছে
+                                const capturedSuccess = mySuccess;
+                                const capturedFailure = myFailure;
+
+                                fetch(GAS_WEB_APP_URL, {
+                                    method: 'POST',
+                                    mode: 'cors',
+                                    headers: {
+                                        'Content-Type': 'text/plain;charset=utf-8'
+                                    },
+                                    body: JSON.stringify({
+                                        functionName: prop,
+                                        arguments: args
+                                    })
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(res => {
+                                    capturedSuccess(res);
+                                })
                                 .catch(err => {
-                                    failureHandler(err.message || err);
+                                    capturedFailure(err.message || err);
                                 });
                             };
                         }
                     });
-                })()
-            }
-        };
-    }
-    
-    // আপনার বাকি সব জাভাস্ক্রিপ্ট কোড (যেমন: loadProducts, checkLogin ইত্যাদি) এর নিচ থেকে শুরু হবে...
-
-
+                }
+                
+                // ডিফল্ট Proxy (প্রথমবার google.script.run এক্সেস করলে)
+                return createChain();
+                
+            })()
+        }
+    };
+}
         // ============================================================
         // GLOBAL STATE & APP DATA
         // ============================================================
@@ -1482,7 +1667,9 @@ let lastPointsCartHash = '';   // শেষবার কোন কার্ট �
                 high_low: "Price: High to Low",
                 error_loading: "Failed to load orders.",
                 try_again: "Try Again",
-                no_orders_sub: "You haven't placed any orders yet."
+                no_orders_sub: "You haven't placed any orders yet.",
+                // ✅ এই লাইনটি যোগ করুন
+                available_coupons: "Available Coupons"
             },
             bn: {
                 home: "হোম", categories: "ক্যাটাগরি", message: "মেসেজ", cart: "কার্ট", account: "অ্যাকাউন্ট",
@@ -1615,7 +1802,9 @@ let lastPointsCartHash = '';   // শেষবার কোন কার্ট �
                 high_low: "দাম: বেশি থেকে কম",
                 error_loading: "অর্ডার লোড করতে ব্যর্থ হয়েছে।",
                 try_again: "আবার চেষ্টা করুন",
-                no_orders_sub: "আপনি এখনো কোনো অর্ডার করেননি।"
+                no_orders_sub: "আপনি এখনো কোনো অর্ডার করেননি।",
+                // ✅ এই লাইনটি যোগ করুন
+                available_coupons: "চলতি কুপন সমূহ"
             }
         };
         // ==========================================
@@ -1665,6 +1854,7 @@ function instantScrollFix() {
                     appData.socialMedia = data.socialMedia;
                     appData.policies = data.policies;
                     appData.popups = data.popups;
+appData.coupons = data.coupons || [];
                     appData.reviews = data.reviews;
 
                     updateDOMWithSettings(appData.settings);
@@ -1714,6 +1904,7 @@ fetch(`${GAS_WEB_APP_URL}?action=getInitialData&t=${timestamp}`, {
                                     appData.socialMedia = res.data.socialMedia;
                                     appData.policies = res.data.policies;
                                     appData.popups = res.data.popups;
+appData.coupons = res.data.coupons || [];
                                     appData.reviews = res.data.reviews;
 
                                     updateDOMWithSettings(appData.settings);
@@ -1731,16 +1922,17 @@ fetch(`${GAS_WEB_APP_URL}?action=getInitialData&t=${timestamp}`, {
                                         syncCartWithLivePrices();
                                         initFilterOptions();
                                         initPopupSystem();
-                                    } else {
-                                        // ব্যাকগ্রাউন্ডে ডাটা আপডেট হলে পেজ রিলোড না করেই UI আপডেট করে দেওয়া
-                                        loadRoute(window.location.hash || '#home');
-                                        updateCartBadge();
-                                        updateOrderSummary();
-                                        updateUIText();
-                                        syncCartWithLivePrices();
-                                        initFilterOptions();
-                                        
-                                    }
+                                                        } else {
+                        // ব্যাকগ্রাউন্ডে ডাটা আপডেট হলে পেজ রিলোড না করেই UI আপডেট করে দেওয়া
+                        appData.computedPages = null; // পুরোনো পেজিনেশন ক্যাশ রিসেট
+                        loadRoute(window.location.hash || '#home');
+                        updateCartBadge();
+                        updateOrderSummary();
+                        updateUIText();
+                        syncCartWithLivePrices();
+                        initFilterOptions();
+                        initPopupSystem(); // পপআপ ও রিসেট হবে
+                    }
                                 }
                             })
                             .catch(err => {
@@ -1843,9 +2035,17 @@ function safeJsonParse(jsonString) {
                     el.placeholder = t(el.getAttribute('data-placeholder-ph'));
                 });
 
+                // ==========================================
+                // নতুন: হেডারের ল্যাঙ্গুয়েজ বাটন আপডেট
+                // ==========================================
+const headerLangText = document.getElementById('headerLangText');
+if(headerLangText) {
+    headerLangText.innerText = appData.language === 'bn' ? 'বাং' : 'EN';
+}
+                // ==========================================
+
             } catch(e) {}
         }
-
 document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // FIX: SCROLL RESTORATION DISABLE
@@ -2260,7 +2460,11 @@ function loadMyOrdersPage() {
                 });
             }
         }
-
+// ক্যাটাগরির নাম সুন্দর করার ফাংশন (rechargeable fan -> Rechargeable Fan)
+function toCategoryTitleCase(str) {
+    if (!str) return '';
+    return str.split(' > ').map(part => part.replace(/\b\w/g, char => char.toUpperCase())).join(' > ');
+}
 // ==========================================
 // HELPER: SIMPLE HASH FUNCTION FOR CACHE KEY
 // ==========================================
@@ -2273,7 +2477,54 @@ function simpleHash(str) {
     }
     return hash;
 }
+// ফ্রন্টএন্ডের যেকোনো জায়গায় বসিয়ে দিন (যেমন isCategoryMatch এর উপরে)
+function normalizeCategoryPath(input) {
+  if (typeof input !== 'string' || !input.trim()) return '';
+  let str = input.toLowerCase().trim();
+  str = str.replace(/\s*>\s*/g, ' > ');
+  str = str.replace(/\s+/g, ' ').trim();
+  return str;
+}
 
+// ফ্রন্টএন্ডের isCategoryMatch ফাংশনটি এভাবে আপডেট করে দিন
+function isCategoryMatch(productCategory, categoryList) {
+    if (!productCategory || !categoryList || categoryList.length === 0) return false;
+    const normalizedProduct = normalizeCategoryPath(productCategory);
+    const productPaths = [];
+    const parts = normalizedProduct.split(' > ');
+    let currentPath = '';
+    parts.forEach((part, index) => {
+        currentPath += (index > 0 ? ' > ' : '') + part.trim();
+        productPaths.push(currentPath);
+    });
+    for (let i = 0; i < productPaths.length; i++) {
+        if (categoryList.includes(productPaths[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+// ==========================================
+// NEW: HIERARCHICAL CATEGORY MATCHING (FRONTEND)
+// ব্যাকএন্ডের লজিকের সাথে হুবহু মিল রাখতে ফ্রন্টএন্ডেও এই ফাংশন ব্যবহার করা হবে
+// ==========================================
+function isCategoryMatch(productCategory, categoryList) {
+    if (!productCategory || !categoryList || categoryList.length === 0) return false;
+    const normalizedProduct = (productCategory || '').toString().trim().toLowerCase();
+    const productPaths = [];
+    const parts = normalizedProduct.split('>');
+    let currentPath = '';
+    parts.forEach((part, index) => {
+        currentPath += (index > 0 ? ' > ' : '') + part.trim();
+        productPaths.push(currentPath);
+    });
+    for (let i = 0; i < productPaths.length; i++) {
+        if (categoryList.includes(productPaths[i])) {
+            return true;
+        }
+    }
+    return false;
+}
 // ==========================================
 // NEW: HELPER FUNCTION TO TOGGLE ORDER DETAILS
 // ==========================================
@@ -3238,164 +3489,289 @@ window.addEventListener('scroll', () => {
         }
     }
 }, { passive: true });
-        // ================= COUPON RESET LOGIC =================
-        function resetCouponLogic() {
-            if (appData.coupon) {
-                appData.coupon = null;
-                localStorage.setItem('coupon', JSON.stringify(null));
-                const sidebarInput = document.getElementById('couponCode');
-                const pageInput = document.getElementById('pageCouponCode');
-                if(sidebarInput) sidebarInput.value = '';
-                if(pageInput) pageInput.value = '';
-                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
-                Toast.fire({ icon: 'info', title: t('coupon_removed') });
-                updateOrderSummary();
-            }
+function resetCouponLogic() {
+    if (appData.coupon) {
+        appData.coupon = null;
+        localStorage.setItem('coupon', JSON.stringify(null));
+        const sidebarInput = document.getElementById('couponCode');
+        const pageInput = document.getElementById('pageCouponCode');
+        if(sidebarInput) sidebarInput.value = '';
+        if(pageInput) pageInput.value = '';
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+        Toast.fire({ icon: 'info', title: t('coupon_removed') });
+        updateOrderSummary();
+        
+        // ✅ এই ১ লাইনটি যোগ করুন — কুপন কার্ডের UI আপডেট হবে
+        if (document.getElementById('cartCouponsSection')) renderCartCoupons();
+    }
+}
+
+function toggleSelectItem(idx) {
+    appData.cart[idx].selected = appData.cart[idx].selected === false ? true : false;
+    localStorage.setItem('cart', JSON.stringify(appData.cart));
+    resetCouponLogic(); 
+    if(document.getElementById('cartPageItems')) updateCartPageUI();
+    if(document.getElementById('cartItems')) updateCartSidebarUI();
+    // ==========================================
+    // NEW: সিলেকশন পরিবর্তনে রিকমেন্ডেশন আপডেট
+    // ==========================================
+    if(document.getElementById('cartRecommendationsSection')) renderCartRecommendations();
+}
+// ==========================================
+// NEW: LOCAL COUPON VALIDATION LOGIC
+// ==========================================
+function validateCouponLocally(rawCode, selectedItems) {
+    if (!appData.coupons || appData.coupons.length === 0) {
+        return { success: false, message: 'No coupons available right now.' };
+    }
+
+    // ১. কুপন কোড ম্যাচিং চেক (Case-Insensitive)
+    const coupon = appData.coupons.find(c => c.couponcode && c.couponcode.toLowerCase() === rawCode.toLowerCase());
+    if (!coupon) {
+        return { success: false, message: 'Invalid Coupon Code!' };
+    }
+
+    // ২. এক্সপায়ারি ডেট চেক
+    if (coupon.expirydate) {
+        const now = new Date();
+        // সময়টি শেষ দিনের রাত ১২টা পর্যন্ত বিবেচনা করার জন্য একদিন যোগ করা হয়েছে
+        const expiry = new Date(coupon.expirydate);
+        expiry.setDate(expiry.getDate() + 1); 
+        
+        if (now > expiry) {
+            return { success: false, message: 'This coupon has expired.' };
         }
+    }
 
-        function toggleSelectItem(idx) {
-            appData.cart[idx].selected = appData.cart[idx].selected === false ? true : false;
-            localStorage.setItem('cart', JSON.stringify(appData.cart));
-            resetCouponLogic(); 
-            if(document.getElementById('cartPageItems')) updateCartPageUI();
-            if(document.getElementById('cartItems')) updateCartSidebarUI();
+    // ৩. সিলেক্টেড আইটেমের সাবটোটাল বের করা
+    const subTotal = selectedItems.reduce((sum, item) => sum + ((item.price) * (item.quantity || item.qty)), 0);
+
+    // ৪. মিনিমাম পারচেজ চেক
+    const minPurchase = parseFloat(coupon.minpurchase) || 0;
+    if (subTotal < minPurchase) {
+        const msg = appData.language === 'bn' 
+            ? `এই কুপন ব্যবহার করতে নূন্যতম ৳${minPurchase} কেনাকাটা করতে হবে।` 
+            : `Minimum purchase of ৳${minPurchase} is required for this coupon.`;
+        return { success: false, message: msg };
+    }
+
+    // ৫. ডিসকাউন্ট ক্যালকুলেশন (Flat / Percentage)
+    let discountAmount = 0;
+    if (coupon.type === 'flat') {
+        discountAmount = parseFloat(coupon.discountamount) || 0;
+    } else if (coupon.type === 'percentage') {
+        const percentage = parseFloat(coupon.discountamount) || 0;
+        discountAmount = (subTotal * percentage) / 100;
+        const maxDisc = parseFloat(coupon.maxdiscountamount) || 0;
+        if (maxDisc > 0 && discountAmount > maxDisc) {
+            discountAmount = maxDisc;
         }
+    }
 
-        // ================= COUPON & CALCULATION LOGIC (UPDATED FOR MULTI-CATEGORY) =================
-        function updateOrderSummary() {
-            const selectedItems = appData.cart.filter(item => item.selected !== false);
+    // ৬. ডেলিভারি ডিসকাউন্ট চেক
+    let isFreeDelivery = coupon.freedelivery === 'yes';
+    let deliveryDiscountAmount = parseFloat(coupon.deliverydiscountamount) || 0;
 
-            if (selectedItems.length === 0) {
-                appData.coupon = null;
-                appData.pointsDiscount = 0;
-                localStorage.setItem('coupon', JSON.stringify(null));
-                const toggle = document.getElementById('ptsToggle');
-                if(toggle) {
-                    toggle.checked = false;
-                    toggle.disabled = true;
-                }
-            }
+    // ৭. ক্যাটাগরি রেস্ট্রিকশন চেক (যদি লোকাল ডাটায় থাকে)
+    let isAllCategory = true;
+    let applicableCategories = [];
+    let excludedCategories = [];
 
-            let productDiscountAmount = 0;
-            let isFreeDeliveryActive = false;
-            let isAllCategory = false; // NEW: Flag for All Category
-            let applicableCategories = []; // NEW: Array for specific categories
-            const baseDelivery = parseFloat(appData.settings.deliverycharge) || 0;
+    try {
+        if (coupon.applicablecategories) {
+            applicableCategories = typeof coupon.applicablecategories === 'string' 
+                ? safeJsonParse(coupon.applicablecategories) 
+                : (Array.isArray(coupon.applicablecategories) ? coupon.applicablecategories : []);
+            if (applicableCategories.length > 0) isAllCategory = false;
+        }
+        if (coupon.excludedcategories) {
+            excludedCategories = typeof coupon.excludedcategories === 'string' 
+                ? safeJsonParse(coupon.excludedcategories) 
+                : (Array.isArray(coupon.excludedcategories) ? coupon.excludedcategories : []);
+        }
+    } catch (e) {
+        console.warn("Could not parse local coupon categories, assuming all categories.");
+    }
 
-            if (appData.coupon) {
-                productDiscountAmount = parseFloat(appData.coupon.discount) || 0;
-                if (appData.coupon.isFreeDelivery) {
-                    isFreeDeliveryActive = true;
-                    // UPDATED: Extract boolean and array from coupon object
-                    isAllCategory = appData.coupon.isAllCategory || false;
-                    applicableCategories = appData.coupon.applicableCategories || [];
-                }
-            }
+    // সার্ভার রেসপন্সের মতো একই ফরম্যাটে রিটার্ন করা হচ্ছে 
+    // যাতে বাকি কোডে কোনো পরিবর্তন করতে না হয়
+    return {
+        success: true,
+        couponCode: coupon.couponcode,
+        discount: discountAmount,
+        isFreeDelivery: isFreeDelivery,
+        isAllCategory: isAllCategory,
+        applicableCategoriesArray: applicableCategories,
+        excludedCategoriesArray: excludedCategories,
+        deliveryDiscountAmount: deliveryDiscountAmount
+    };
+}
+// ================= COUPON & CALCULATION LOGIC (UPDATED FOR MULTI-CATEGORY & PARTIAL DELIVERY DISCOUNT) =================
+function updateOrderSummary() {
+    const selectedItems = appData.cart.filter(item => item.selected !== false);
 
-            let subTotal = 0;
-            let paidItems = [];
-            let allItems = []; 
+    if (selectedItems.length === 0) {
+        appData.coupon = null;
+        appData.pointsDiscount = 0;
+        localStorage.setItem('coupon', JSON.stringify(null));
+        const toggle = document.getElementById('ptsToggle');
+        if(toggle) {
+            toggle.checked = false;
+            toggle.disabled = true;
+        }
+    }
 
-            selectedItems.forEach(item => {
-                const qty = item.quantity || item.qty || 1;
-                const price = parseFloat(item.price); // Item price is specific (variant or main)
-                const itemCat = (item.category || '').toString().trim().toLowerCase();
-                const extraCharge = parseFloat(item.extradeliverycharge || 0);
+    let productDiscountAmount = 0;
+    let isFreeDeliveryActive = false;
+    let isAllCategory = false;
+    let applicableCategories = [];
+    const baseDelivery = parseFloat(appData.settings.deliverycharge) || 0;
 
-                subTotal += (price * qty);
+    if (appData.coupon) {
+        productDiscountAmount = parseFloat(appData.coupon.discount) || 0;
+        if (appData.coupon.isFreeDelivery) {
+            isFreeDeliveryActive = true;
+            isAllCategory = appData.coupon.isAllCategory || false;
+            applicableCategories = appData.coupon.applicableCategories || [];
+        }
+    }
 
-                // UPDATED LOGIC: Multi-Category Check
-                if (isFreeDeliveryActive) {
-                    // If 'all' categories are free, everything goes to freeItems
-                    if (isAllCategory) {
-                        allItems.push({ qty, extraCharge });
-                    } 
-                    // If specific categories, check if item category is in the array
-                    else if (applicableCategories.includes(itemCat)) {
-                        allItems.push({ qty, extraCharge });
-                    } 
-                    // Else, it's a paid item
-                    else {
-                        paidItems.push({ qty, extraCharge });
-                        allItems.push({ qty, extraCharge });
-                    }
-                } else {
-                    // No coupon or coupon has no free delivery, everything is paid
-                    paidItems.push({ qty, extraCharge });
-                    allItems.push({ qty, extraCharge });
-                }
-            });
+    let subTotal = 0;
+    let paidItems = [];
+    let allItems = []; 
 
-            const calcShipping = (items) => {
-                if (items.length === 0) return 0;
-                let totalShipping = 0;
-                let isFirstItem = true;
-                items.forEach(item => {
-                    const qty = item.qty;
-                    const extra = item.extraCharge;
-                    if (isFirstItem) {
-                        totalShipping += baseDelivery;
-                        if (qty >1) totalShipping += ((qty - 1) * extra);
-                        isFirstItem = false;
-                    } else {
-                        totalShipping += (qty * extra);
-                    }
-                });
-                return totalShipping;
-            };
+    selectedItems.forEach(item => {
+        const qty = item.quantity || item.qty || 1;
+        const price = parseFloat(item.price); 
+        const itemCat = (item.category || '').toString().trim().toLowerCase();
+        const extraCharge = parseFloat(item.extradeliverycharge || 0);
 
-            const totalShipping = calcShipping(paidItems);
-            const totalShippingWithoutCoupon = isFreeDeliveryActive ? calcShipping(allItems) : totalShipping;
-            const deliveryDiscountAmount = totalShippingWithoutCoupon - totalShipping;
+        subTotal += (price * qty);
+
+        // ==========================================
+        // NEW: PARTIAL DELIVERY DISCOUNT LOGIC
+        // ==========================================
+        if (isFreeDeliveryActive) {
+            const excludedList = appData.coupon.excludedCategories || [];
+            const hasPartialDelDiscount = appData.coupon && appData.coupon.deliveryDiscountAmount > 0;
             
-            const finalTotal = (subTotal + totalShipping) - productDiscountAmount - appData.pointsDiscount;
+            let isApplicable = isAllCategory || isCategoryMatch(item.category, applicableCategories);
+            let isExcluded = isCategoryMatch(item.category, excludedList);
+            
+            if (hasPartialDelDiscount) {
+                // PARTIAL DISCOUNT: সব আইটেমে স্বাভাবিক চার্জ, পরে নির্দিষ্ট টাকা কাটা হবে
+                paidItems.push({ qty, extraCharge });
+                allItems.push({ qty, extraCharge });
+            } else if (isApplicable && !isExcluded) {
+                // FULL FREE: এই আইটেম ফ্রি
+                allItems.push({ qty, extraCharge });
+            } else {
+                // NOT APPLICABLE: স্বাভাবিক চার্জ
+                paidItems.push({ qty, extraCharge });
+                allItems.push({ qty, extraCharge });
+            }
+        } else {
+            paidItems.push({ qty, extraCharge });
+            allItems.push({ qty, extraCharge });
+        }
+        // ==========================================
+    });
 
-            const updateDisplay = (prefix) => {
-                const subEl = document.getElementById(`${prefix}Subtotal`);
-                const delEl = document.getElementById(`${prefix}Delivery`);
-                const totEl = document.getElementById(`${prefix}Total`);
-                
-                if(!subEl) return; 
+    const calcShipping = (items) => {
+        if (items.length === 0) return 0;
+        let totalShipping = 0;
+        let isFirstItem = true;
+        items.forEach(item => {
+            const qty = item.qty;
+            const extra = item.extraCharge;
+            if (isFirstItem) {
+                totalShipping += baseDelivery;
+                if (qty > 1) totalShipping += ((qty - 1) * extra);
+                isFirstItem = false;
+            } else {
+                totalShipping += (qty * extra);
+            }
+        });
+        return totalShipping;
+    };
 
-                subEl.innerText = `৳${subTotal.toFixed(2)}`;
-                delEl.innerText = totalShipping === 0 ? 'FREE' : `৳${totalShipping.toFixed(2)}`;
-                totEl.innerText = `৳${finalTotal.toFixed(2)}`;
+    const totalShipping = calcShipping(paidItems);
+    
+    // ==========================================
+    // FIX: DELIVERY DISCOUNT CALCULATION
+    // ==========================================
+    let deliveryDiscountAmount = 0;
+    let isPartialDelDiscount = false;
+    
+    if (isFreeDeliveryActive && appData.coupon && appData.coupon.deliveryDiscountAmount > 0) {
+        // CASE 1: PARTIAL DISCOUNT (যেমন: ৭০ টাকা ছাড়)
+        deliveryDiscountAmount = appData.coupon.deliveryDiscountAmount;
+        isPartialDelDiscount = true;
+    } else if (isFreeDeliveryActive) {
+        // CASE 2: FULL FREE (নির্দিষ্ট ক্যাটাগরি ফ্রি)
+        const totalShippingWithoutCoupon = calcShipping(allItems);
+        deliveryDiscountAmount = totalShippingWithoutCoupon - totalShipping;
+    }
+    // ==========================================
 
-                const prodDiscCont = document.getElementById(`${prefix}ProdDiscContainer`);
-                const prodDiscText = document.getElementById(`${prefix}ProdDisc`);
-                if (productDiscountAmount > 0) {
-                    prodDiscCont.classList.remove('hidden');
-                    prodDiscText.innerText = `-৳${productDiscountAmount.toFixed(2)}`;
-                } else {
-                    prodDiscCont.classList.add('hidden');
-                }
+    // ==========================================
+    // FIX: TOTAL CALCULATION
+    // ==========================================
+    let finalTotal;
+    if (isPartialDelDiscount) {
+        // PARTIAL: ডিসকাউন্ট টোটাল থেকে বাদ
+        finalTotal = (subTotal + totalShipping) - productDiscountAmount - deliveryDiscountAmount - appData.pointsDiscount;
+    } else {
+        // FULL FREE বা NO COUPON: ডিসকাউন্ট ইতিমধ্যে বাদ (চার্জেই কম আসছে)
+        finalTotal = (subTotal + totalShipping) - productDiscountAmount - appData.pointsDiscount;
+    }
+    // ==========================================
 
-                const delDiscCont = document.getElementById(`${prefix}DelDiscContainer`);
-                const delDiscText = document.getElementById(`${prefix}DelDisc`);
-                if (deliveryDiscountAmount > 0) {
-                    delDiscCont.classList.remove('hidden');
-                    delDiscText.innerText = `-৳${deliveryDiscountAmount.toFixed(2)}`;
-                } else {
-                    delDiscCont.classList.add('hidden');
-                }
+    const updateDisplay = (prefix) => {
+        const subEl = document.getElementById(`${prefix}Subtotal`);
+        const delEl = document.getElementById(`${prefix}Delivery`);
+        const totEl = document.getElementById(`${prefix}Total`);
+        
+        if(!subEl) return; 
 
-                const ptsDiscCont = document.getElementById(`${prefix}PtsDiscContainer`);
-                const ptsDiscText = document.getElementById(`${prefix}PtsDisc`);
-                if (appData.pointsDiscount > 0) {
-                    ptsDiscCont.classList.remove('hidden');
-                    ptsDiscText.innerText = `-৳${appData.pointsDiscount.toFixed(2)}`;
-                } else {
-                    ptsDiscCont.classList.add('hidden');
-                }
-            };
+        subEl.innerText = `৳${subTotal.toFixed(2)}`;
+        delEl.innerText = totalShipping === 0 ? 'FREE' : `৳${totalShipping.toFixed(2)}`;
+        totEl.innerText = `৳${finalTotal.toFixed(2)}`;
 
-            updateDisplay('cart');
-            updateDisplay('page');
-            updateDisplay('checkout');
-
-            localStorage.setItem('cart', JSON.stringify(appData.cart));
+        const prodDiscCont = document.getElementById(`${prefix}ProdDiscContainer`);
+        const prodDiscText = document.getElementById(`${prefix}ProdDisc`);
+        if (productDiscountAmount > 0) {
+            prodDiscCont.classList.remove('hidden');
+            prodDiscText.innerText = `-৳${productDiscountAmount.toFixed(2)}`;
+        } else {
+            prodDiscCont.classList.add('hidden');
         }
 
+        const delDiscCont = document.getElementById(`${prefix}DelDiscContainer`);
+        const delDiscText = document.getElementById(`${prefix}DelDisc`);
+        if (deliveryDiscountAmount > 0) {
+            delDiscCont.classList.remove('hidden');
+            delDiscText.innerText = `-৳${deliveryDiscountAmount.toFixed(2)}`;
+        } else {
+            delDiscCont.classList.add('hidden');
+        }
+
+        const ptsDiscCont = document.getElementById(`${prefix}PtsDiscContainer`);
+        const ptsDiscText = document.getElementById(`${prefix}PtsDisc`);
+        if (appData.pointsDiscount > 0) {
+            ptsDiscCont.classList.remove('hidden');
+            ptsDiscText.innerText = `-৳${appData.pointsDiscount.toFixed(2)}`;
+        } else {
+            ptsDiscCont.classList.add('hidden');
+        }
+    };
+
+    updateDisplay('cart');
+    updateDisplay('page');
+    updateDisplay('checkout');
+
+    localStorage.setItem('cart', JSON.stringify(appData.cart));
+}
     // ==========================================
     // NEW: Calculate Points Discount Logic (Checkout)
     // ==========================================
@@ -3532,24 +3908,7 @@ async function handleApplyCoupon() {
     
     if (!rawCode) return Swal.fire('Warning', t('fill_all'), 'warning');
 
-    // ==========================================================
-    // NEW: FRONTEND VALIDATION (REGEX)
-    // Requirement: Min 3 Letters & 1 Number
-    // ==========================================================
-    // Regex Explanation:
-    // (?=(.*[a-zA-Z]){3,}) -> Lookahead: Ensures at least 3 letters exist
-    // (?=.*\d)            -> Lookahead: Ensures at least 1 digit exists
-    // [a-zA-Z0-9]+$       -> Allows only alphanumeric characters for the whole string
-    const couponRegex = /^(?=(.*[a-zA-Z]){3,})(?=.*\d)[a-zA-Z0-9]+$/;
-
-    if (!couponRegex.test(rawCode)) {
-        return Swal.fire({
-            icon: 'warning', 
-            title: 'Invalid Coupon', 
-            text: 'Invalid Coupon Code!' 
-        });
-    }
-    // ==========================================================
+    // ❌ রেগেক্স চেক রিমুভ করা হয়েছে (লোকালি ম্যাচিংয়ে এটার দরকার নেই)
 
     inputField.value = t('validating');
 
@@ -3561,20 +3920,29 @@ async function handleApplyCoupon() {
             return Swal.fire('Warning', 'Please select at least one item to apply coupon', 'warning');
         }
 
-        const response = await new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).validateCoupon(rawCode, appData.user?.userid, selectedItems);
-        });
+        // লোকাল ফাংশন কল
+        const response = validateCouponLocally(rawCode, selectedItems);
 
         if (response.success) {
-            // Store the full object
             appData.coupon = { 
                 code: response.couponCode, 
                 discount: response.discount, 
                 isFreeDelivery: response.isFreeDelivery,
                 isAllCategory: response.isAllCategory, 
-                applicableCategories: response.applicableCategories 
+                applicableCategories: response.applicableCategoriesArray, 
+                excludedCategories: response.excludedCategoriesArray,
+                deliveryDiscountAmount: response.deliveryDiscountAmount || 0
             };
-            Swal.fire({ icon: 'success', title: 'Coupon Applied!', text: `You saved ৳${response.discount.toFixed(2)}`, timer: 2000, showConfirmButton: false });
+            
+            let msgHtml = `<div style="text-align:left; line-height:1.8;">`;
+            msgHtml += `<span style="color:#16a34a;font-weight:700;">${tL('product_discount')}:</span> <span style="font-size:18px;font-weight:800;color:#16a34a;">৳${response.discount.toFixed(2)}</span>`;
+            
+            if (response.isFreeDelivery && response.deliveryDiscountAmount > 0) {
+                msgHtml += `<br><span style="color:#2563eb;font-weight:700;">${tL('delivery_save')}:</span> <span style="font-size:16px;font-weight:800;color:#2563eb;">৳${response.deliveryDiscountAmount}</span>`;
+            } else if (response.isFreeDelivery) {
+                msgHtml += `<br><span style="color:#16a34a;font-weight:700;">${tL('free_delivery_badge')}</span>`;
+            }
+            msgHtml += `</div>`;
             updateOrderSummary();
             if(couponInput) couponInput.value = '';
             if(pageCouponInput) pageCouponInput.value = '';
@@ -3591,8 +3959,8 @@ async function handleApplyCoupon() {
     }
 }
 
-        function handleApplyCouponFromPage() { handleApplyCoupon(); }
-        function removeCoupon() { appData.coupon = null; updateOrderSummary(); }
+function handleApplyCouponFromPage() { handleApplyCoupon(); }
+function removeCoupon() { appData.coupon = null; updateOrderSummary(); }
 
         // ================= UI HELPERS =================
         function updateCartBadge() {
@@ -3807,15 +4175,10 @@ function updateCartPageUI() {
     appData.cart.forEach((item, idx) => {
         const titleEl = document.getElementById(`title-${idx}`);
         if (titleEl) {
-            // ১. নামের অংশ (এক লাইনে থাকবে)
             const namePart = `<span class="cart-name-text">${item.name}</span>`;
-            
-            // ২. ভ্যারিয়েন্টের অংশ (নিচের লাইনে থাকবে)
             const variantPart = item.selectedVariant 
                 ? `<span class="cart-variant-text">(${item.selectedVariant})</span>` 
                 : '';
-            
-            // ৩. একসাথে বসানো
             titleEl.innerHTML = namePart + variantPart;
             titleEl.classList.add('smart-truncate');
         }
@@ -3823,6 +4186,11 @@ function updateCartPageUI() {
     // ==========================================
 
     updateOrderSummary();
+    
+    // ==========================================
+    // NEW: পেজ UI আপডেটের পর রিকমেন্ডেশন আপডেট
+    // ==========================================
+    if(document.getElementById('cartRecommendationsSection')) renderCartRecommendations();
 }
         // ==========================================
         // UPDATED: ADD TO CART WITH VARIANT SUPPORT
@@ -4153,14 +4521,18 @@ function updateQty(idx, delta) {
     // ==========================================
 }
 
-        function removeItem(idx) {
-            appData.cart.splice(idx,1);
-            resetCouponLogic(); 
-            updateCartBadge();
-            updateOrderSummary();
-            if(document.getElementById('cartPageItems')) updateCartPageUI();
-            if(document.getElementById('cartItems')) updateCartSidebarUI();
-        }
+function removeItem(idx) {
+    appData.cart.splice(idx,1);
+    resetCouponLogic(); 
+    updateCartBadge();
+    updateOrderSummary();
+    if(document.getElementById('cartPageItems')) updateCartPageUI();
+    if(document.getElementById('cartItems')) updateCartSidebarUI();
+    // ==========================================
+    // NEW: আইটেম রিমুভ করলে রিকমেন্ডেশন আপডেট
+    // ==========================================
+    if(document.getElementById('cartRecommendationsSection')) renderCartRecommendations();
+}
 
 // ==========================================
 // UPDATED: BUY NOW (NO LIMIT CHECK + TOP SORTING)
@@ -4358,21 +4730,13 @@ function loadHeroSlider() {
             const container = document.getElementById('topCategories');
             if (!container) return;
             
-            // ==========================================
-            // ১. শুধুমাত্র "istop = yes" থাকা ক্যাটাগরিগুলো ফিল্টার করা হচ্ছে
-            // ==========================================
             const topCats = appData.categories.filter(c => c.istop === 'yes');
-            
-            // ২. ইউনিক মেইন ক্যাটাগরি বের করা (যেমন: "Electronics > Mobile" থেকে "Electronics")
             const allMainCats = topCats.map(c => c.categoryname.split(' > ')[0]);
             const uniqueMainCats = [...new Set(allMainCats)];
-            
-            // ৩. ইমেজ পাওয়ার জন্য অবজেক্টে ম্যাপ করা
             const cats = uniqueMainCats.map(mainName => topCats.find(c => c.categoryname === mainName || c.categoryname.startsWith(mainName + ' > '))).filter(c => c);
             
-            // ৪. HTML তৈরি করা (আগের মতোই, তবে slice(0, 4) রিমুভ করা হয়েছে)
         let html = cats.map(c => {
-            const displayName = c.categoryname.split(' > ')[0];
+            const displayName = toCategoryTitleCase(c.categoryname.split(' > ')[0]);
             return `
             <div onclick="navigateTo('#category?name=${encodeURIComponent(displayName)}')" class="text-center cursor-pointer group">
                 <div class="aspect-square rounded-xl overflow-hidden border border-gray-100 group-hover:border-primary/30 transition">
@@ -4382,12 +4746,6 @@ function loadHeroSlider() {
             `;
         }).join('');
             
-            // ==========================================
-            // ৫. মাঝে বরাবর এলাইনমেন্ট লজিক (Centering Last Row)
-            // যদি মোট ক্যাটাগরির সংখ্যা ৪ এর চেয়ে কম হয় অথবা ৪ দিয়ে ভাগ না যায়, 
-            // তবে বাকি ঘরগুলো অদৃশ্য (invisible) ডিভ দিয়ে ফিল করে দেওয়া হবে।
-            // এতে করে ক্যাটাগরিগুলো গ্রিডের মাঝখানে চলে আসবে।
-            // ==========================================
             const remainder = cats.length % 4;
             if (remainder > 0) {
                 const emptySpaces = 4 - remainder;
@@ -4456,26 +4814,20 @@ function loadHeroSlider() {
             `;
         }
 
-        // ==========================================
-        // UPDATED: CATEGORIES PAGE (LEVEL 1 & 2)
-        // ==========================================
         function loadCategoriesPage() {
     window.scrollTo(0, 0);
             loadTemplate('categoriesTemplate');
             const container = document.getElementById('allCategories');
             
-            // Extract unique Main Categories
             const allMainCats = appData.categories.map(c => c.categoryname.split(' > ')[0]);
             const uniqueMainCats = [...new Set(allMainCats)];
             
-            // Map back to objects for images
             const cats = uniqueMainCats.map(mainName => {
-                // Find any category object that matches this main name (either exact or as a parent of sub-cat)
                 return appData.categories.find(c => c.categoryname === mainName || c.categoryname.startsWith(mainName + ' > '));
             }).filter(c => c);
 
             container.innerHTML = cats.map(c => {
-                const displayName = c.categoryname.split(' > ')[0];
+                const displayName = toCategoryTitleCase(c.categoryname.split(' > ')[0]);
                 return `
                 <div onclick="navigateTo('#category?name=${encodeURIComponent(displayName)}')" class="text-center cursor-pointer">
                     <div class="aspect-square rounded-2xl overflow-hidden mb-2 shadow-sm border">
@@ -4487,45 +4839,29 @@ function loadHeroSlider() {
             }).join('');
         }
 
-// ==========================================
-// UPDATED: CATEGORY/PRODUCTS NAVIGATION LOGIC (WITH BREADCRUMB)
-// ==========================================
-function loadCategoryProducts(name) {
+function loadCategoryProducts(rawName) {
     const content = document.getElementById('content');
     content.innerHTML = ''; 
     
-    // ==========================================
-    // FIX: SMART SCROLL RESTORATION FOR CATEGORIES
-    // ==========================================
-    
-    // ১. বর্তমান পেজের হ্যাশ (URL)
-    const currentHash = window.location.hash;
-    
-    // ২. সেশন স্টোরেজ থেকে স্ক্রল পজিশন খোঁজা
     let targetScrollY = 0;
     try {
-        const savedScroll = sessionStorage.getItem('scrollPos_' + currentHash);
+        const savedScroll = sessionStorage.getItem('scrollPos_' + window.location.hash);
         if (savedScroll) {
             targetScrollY = parseInt(savedScroll, 10);
         }
-    } catch (e) {
-        // স্টোরেজ না পেলে ডিফল্ট ০ থাকবে
-        targetScrollY = 0;
-    }
+    } catch (e) {}
 
-    // ৩. স্ক্রল করা (যদি আগে স্ক্রল করা থাকে তবে সেখানে, না হলে ০-তে)
     requestAnimationFrame(() => {
         window.scrollTo(0, targetScrollY);
     });
-    // ==========================================
-
-    // নোট: আমরা এখানে স্কেলেটন লোডার দেখাবো না, কারণ ডাটা ইতিমধ্যেই আমাদের কাছে (appData) আছে।
     
-    // চেক করা এটি সাব-ক্যাটাগরি কিনা (Contains ' > ')
+    // সমাধান: লজিকের জন্য নরমালাইজড নাম (ছোট হাতে) এবং ডিসপ্লের জন্য সুন্দর নাম (বড় হাতে) আলাদা করা হচ্ছে
+    const name = normalizeCategoryPath(rawName);
+    const displayName = toCategoryTitleCase(name);
+
     const isSubCategory = name.includes(' > ');
 
     if (isSubCategory) {
-        // LEVEL 3: SUB-CATEGORY (LOCAL FILTERING)
         content.innerHTML = ''; 
         loadTemplate('categoryProductsTemplate');
         
@@ -4533,30 +4869,22 @@ function loadCategoryProducts(name) {
         const mainCat = parts[0];
         const subCat = parts[1];
 
-        // টাইটেল আপডেট
-        document.getElementById('categoryTitle').textContent = subCat;
+        document.getElementById('categoryTitle').textContent = toCategoryTitleCase(subCat);
 
-        // ==========================================
-        // OPTIMIZED LOGIC: LOCAL FILTERING (NO SERVER CALL)
-        // ==========================================
         const filteredProducts = appData.products.filter(p => p.category === name);
 
-        // ==========================================
-        // BREADCRUMB LOGIC (Sub-Category View)
-        // ==========================================
         const bcContainer = document.getElementById('breadcrumb-container');
         if(bcContainer) {
             bcContainer.classList.remove('hidden');
             let bcHtml = '';
             bcHtml += `<button onclick="navigateTo('#categories')" class="hover:text-gray-800">${t('categories')}</button>`;
             bcHtml += `<span class="mx-1 text-gray-400">/</span>`;
-            bcHtml += `<button onclick="navigateTo('#category?name=${encodeURIComponent(mainCat)}')" class="hover:text-gray-800">${mainCat}</button>`;
+            bcHtml += `<button onclick="navigateTo('#category?name=${encodeURIComponent(mainCat)}')" class="hover:text-gray-800">${toCategoryTitleCase(mainCat)}</button>`;
             bcHtml += `<span class="mx-1 text-gray-400">/</span>`;
-            bcHtml += `<span class="text-gray-800">${subCat}</span>`;
+            bcHtml += `<span class="text-gray-800">${toCategoryTitleCase(subCat)}</span>`;
             bcContainer.innerHTML = bcHtml;
         }
 
-        // প্রোডাক্ট রেন্ডার
         document.getElementById('categoryProducts').innerHTML = filteredProducts.map(p => createProductCard(p)).join('');
         
         if(filteredProducts.length === 0) {
@@ -4569,11 +4897,9 @@ function loadCategoryProducts(name) {
         document.getElementById('content').insertAdjacentHTML('beforeend', getFooterHTML());
 
     } else {
-        // LEVEL 2: CHECK IF SUB-CATEGORIES EXIST
         const hasSubCategories = appData.categories.some(c => c.categoryname.startsWith(name + ' > '));
 
         if (hasSubCategories) {
-            // SHOW SUB-CATEGORIES GRID (LEVEL 2) WITH BREADCRUMB
             content.innerHTML = ''; 
             const subCatContainer = document.createElement('div');
             subCatContainer.className = 'animate-fade-in pb-16';
@@ -4582,17 +4908,16 @@ function loadCategoryProducts(name) {
                 <div class="text-base font-semibold text-primary flex items-center space-x-2 mb-4 px-1">
                     <button onclick="navigateTo('#categories')" class="hover:text-gray-800">${t('categories')}</button>
                     <span class="mx-1 text-gray-400">/</span>
-                    <span class="text-gray-800">${name}</span>
+                    <span class="text-gray-800">${displayName}</span>
                 </div>
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-bold text-gray-800 cursor-pointer" onclick="navigateTo('#categories')">${name}</h1>
+                    <h1 class="text-2xl font-bold text-gray-800 cursor-pointer" onclick="navigateTo('#categories')">${displayName}</h1>
                 </div>
                 <div class="grid grid-cols-3 gap-4" id="subCategoriesList"></div>
             `;
             
             document.getElementById('content').appendChild(subCatContainer);
 
-            // লোকাল ফিল্টারিং ব্যবহার করে সাব-ক্যাটাগরি খুঁজে বের করা
             const subCats = appData.categories.filter(c => c.categoryname.startsWith(name + ' > '));
             
             document.getElementById('subCategoriesList').innerHTML = subCats.map(c => `
@@ -4600,7 +4925,7 @@ function loadCategoryProducts(name) {
                     <div class="aspect-square rounded-2xl overflow-hidden mb-2 shadow-sm border">
                         <img src="${c.categoryimageurl}" class="w-full h-full object-cover" loading="lazy">
                     </div>
-                    <p class="text-xs font-bold text-gray-700 truncate">${c.categoryname.split(' > ')[1]}</p>
+                    <p class="text-xs font-bold text-gray-700 truncate">${toCategoryTitleCase(c.categoryname.split(' > ')[1])}</p>
                 </div>
             `).join('');
 
@@ -4611,27 +4936,19 @@ function loadCategoryProducts(name) {
             document.getElementById('content').insertAdjacentHTML('beforeend', getFooterHTML());
 
         } else {
-            // LEVEL 3 (LEGACY): LOAD PRODUCTS DIRECTLY FOR MAIN CATEGORY
             content.innerHTML = ''; 
             loadTemplate('categoryProductsTemplate');
-            document.getElementById('categoryTitle').textContent = name;
+            document.getElementById('categoryTitle').textContent = displayName;
             
-            // ==========================================
-            // OPTIMIZED LOGIC: LOCAL FILTERING (NO SERVER CALL)
-            // ==========================================
-            // মেইন ক্যাটাগরির জন্য আমাদের 'startsWith' ব্যবহার করতে হবে
             const filteredProducts = appData.products.filter(p => p.category.startsWith(name));
 
-            // ==========================================
-            // BREADCRUMB LOGIC (LEGACY VIEW - MAIN CAT)
-            // ==========================================
             const bcContainer = document.getElementById('breadcrumb-container');
             if(bcContainer) {
                 bcContainer.classList.remove('hidden');
                 let bcHtml = '';
                 bcHtml += `<button onclick="navigateTo('#categories')" class="hover:text-gray-800">${t('categories')}</button>`;
                 bcHtml += `<span class="mx-1 text-gray-400">/</span>`;
-                bcHtml += `<span class="text-gray-800">${name}</span>`;
+                bcHtml += `<span class="text-gray-800">${displayName}</span>`;
                 bcContainer.innerHTML = bcHtml;
             }
 
@@ -4648,7 +4965,6 @@ function loadCategoryProducts(name) {
         }
     }
 }
-
         // ==========================================
         // UPDATED: PRODUCT DETAILS WITH VARIANT LOGIC
         // ==========================================
@@ -4844,11 +5160,456 @@ function loadProductDetails(id) {
         }
 
 function loadCartPage() {
-    window.scrollTo(0, 0); // ফিক্স: পেজ লোড হলে উপরে নিবে
+    window.scrollTo(0, 0);
     loadTemplate('cartPageTemplate');
-    updateCartPageUI();
+    
+    // ==========================================
+    // EMPTY STATE: কার্ট খালি হলে শুধু এই তিনটি দেখাবে
+    // ==========================================
+    if (appData.cart.length === 0) {
+        document.getElementById('cartPageItems').innerHTML = '';
+        document.getElementById('emptyCart').classList.remove('hidden');
+        document.getElementById('cartSummary').classList.add('hidden');
+    } else {
+        document.getElementById('emptyCart').classList.add('hidden');
+        updateCartPageUI();
+    }
+    
+    // ==========================================
+    // কুপন ও রিকমেন্ডেশন: সবসময় দেখাবে (কার্ট খালি থাকলেও)
+    // ==========================================
+    renderCartCoupons();
+    renderCartRecommendations();
+}
+// ==========================================
+// LOCAL TRANSLATION HELPER
+// ==========================================
+function tL(key) {
+    const lang = (typeof appData !== 'undefined' && appData.language) ? appData.language : 'en';
+    const map = {
+        available_coupons:     { en: 'Available Coupons', bn: 'চলতি কুপন সমূহ' },
+        min_spend:             { en: 'Min Spend', bn: 'সর্বনিম্ন কেনাকাটা' },
+        max_discount:          { en: 'Max Discount', bn: 'সর্বোচ্চ ছাড়' },
+        expires_on:            { en: 'Expires', bn: 'মেয়াদ' },
+        coupon_applied:        { en: 'Coupon Applied!', bn: 'কুপন প্রয়োগ হয়েছে!' },
+        no_coupons:            { en: 'No coupons available right now.', bn: 'এখন কোনো কুপন নেই।' },
+        flat:                  { en: 'Flat', bn: 'ফ্ল্যাট' },
+        off:                   { en: 'off', bn: 'ছাড়' },
+        free_delivery_title:   { en: 'Add this product with the same delivery charge!', bn: 'একই ডেলিভারি চার্জে নিচের প্রোডাক্টটি লুফে নিন!' },
+        free_delivery_sub:     { en: 'No extra shipping fees (0 TK)', bn: 'কোনো অতিরিক্ত শিপিং চার্জ নেই (০ টাকা)' },
+        free_delivery_badge:   { en: '🚚 Free Delivery', bn: '🚚 ফ্রি ডেলিভারি' },
+        delivery_save:         { en: 'Delivery Save', bn: 'ডেলিভারি সেভ' },
+        see_more:              { en: 'See More', bn: 'আরও দেখুন' },
+        see_less:              { en: 'See Less', bn: 'কম দেখান' },
+        add_item:              { en: '+ Add Item', bn: '+ যোগ করুন' },
+        already_added:         { en: 'Added', bn: 'যোগ হয়েছে' },
+        apply_coupon_btn:      { en: 'Apply Coupon', bn: 'কুপন প্রয়োগ করুন' },
+        select_district:       { en: 'Select District', bn: 'জেলা নির্বাচন করুন' },
+        select_upazila:        { en: 'Select Upazila', bn: 'উপজেলা নির্বাচন করুন' },
+        product_discount:      { en: 'Product Discount', bn: 'পণ্য মূল্য ছাড়' },
+        added_cart:            { en: 'Added to cart', bn: 'কার্টে যোগ করা হয়েছে' },
+        validating:            { en: 'Validating...', bn: 'যাচাই হচ্ছে...' },
+        fill_all:              { en: 'Please fill all fields', bn: 'অনুগ্রহ করে সব তথ্য পূরণ করুন' },
+        
+        // ==========================================
+        // NEW: DELIVERY DISCOUNT LABELS
+        // ==========================================
+        delivery_discount_label:    { en: 'Delivery Discount', bn: 'ডেলিভারি ছাড়' },
+        free_delivery_on_coupon:  { en: 'Free Delivery', bn: 'ফ্রি ডেলিভারি' },
+        save_taka:               { en: 'Save ৳', bn: '৳ সেভ' },
+        up_to:                   { en: 'up to', bn: 'পর্যন্ত' },
+        on_delivery:             { en: 'on delivery', bn: 'ডেলিভারিতে' },
+        plus_delivery:           { en: '+ Delivery', bn: '+ ডেলিভারি' },
+        // ==========================================
+    };
+    return (map[key] && map[key][lang]) || key;
+}
+// ==========================================
+// FORMAT COUPON DATE
+// ==========================================
+function formatCouponDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return 'N/A';
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return d.toLocaleDateString('en-GB', options);
+    } catch(e) { return 'N/A'; }
 }
 
+function renderCartCoupons() {
+    const section = document.getElementById('cartCouponsSection');
+    const listEl = document.getElementById('cartCouponsList');
+    const noMsg = document.getElementById('cartNoCouponsMsg');
+    const headerTextEl = document.querySelector('#cartCouponsSection .cart-section-header span');
+    
+    const coupons = appData.coupons || [];
+    const filteredCoupons = coupons.filter(coupon => coupon.description && coupon.description.trim() !== '');
+    
+    if (!filteredCoupons || filteredCoupons.length === 0) {
+        if(section) section.classList.add('hidden');
+        return;
+    }
+    
+    if(section) section.classList.remove('hidden');
+    listEl.innerHTML = '';
+    noMsg.classList.add('hidden');
+
+    // ==========================================
+    // VIP কুপন লজিক
+    // ==========================================
+    const isLoggedIn = appData.user && appData.user.fullname;
+    let regularCoupons = [];
+    let specialCoupons = [];
+    const vipCount = 2; 
+
+    if (isLoggedIn) {
+        if (filteredCoupons.length > vipCount) {
+            specialCoupons = filteredCoupons.slice(0, vipCount);
+            regularCoupons = filteredCoupons.slice(vipCount);
+            
+            const displayName = appData.user.fullname.split(' ').slice(0, 2).join(' ');
+            const coloredName = `<span style="color: var(--primary-color); font-weight: 800;">${displayName}</span>`;
+            headerTextEl.innerHTML = appData.language === 'bn' 
+                ? `${coloredName}, আপনার জন্য স্পেশাল কুপন সমূহ ✨` 
+                : `${coloredName}, Special Coupons for You! ✨`;
+        } else {
+            regularCoupons = filteredCoupons;
+        }
+    } else {
+        // ==========================================
+        // নতুন: লগআউট অবস্থায় লগইন প্রম্পট দেখানো
+        // ==========================================
+        if (filteredCoupons.length > vipCount) {
+            regularCoupons = filteredCoupons.slice(vipCount);
+        } else {
+            regularCoupons = filteredCoupons;
+        }
+
+        if(headerTextEl) {
+            if (appData.language === 'bn') {
+                headerTextEl.innerHTML = `চলতি কুপনসমূহ <span style="font-size: 10px; color: #9ca3af; font-weight: 500;">(লগইন করুন <a href="javascript:void(0)" onclick="event.preventDefault(); navigateTo('#login')" style="color: var(--primary-color); text-decoration: underline; font-weight: 700;">আপনার স্পেশাল কুপন পেতে</a>)</span>`;
+            } else {
+                headerTextEl.innerHTML = `Available Coupons <span style="font-size: 9px; color: #9ca3af; font-weight: 500;">(Login for <a href="javascript:void(0)" onclick="event.preventDefault(); navigateTo('#login')" style="color: var(--primary-color); text-decoration: underline; font-weight: 700;">your special coupons</a>)</span>`;
+            }
+        }
+        // ==========================================
+    }
+
+    // স্পেশাল কুপন রেন্ডার
+    specialCoupons.forEach(coupon => {
+        listEl.innerHTML += generateCouponHTML(coupon, true);
+    });
+
+    // সাধারণ কুপন রেন্ডার
+    regularCoupons.forEach(coupon => {
+        listEl.innerHTML += generateCouponHTML(coupon, false);
+    });
+
+    if (regularCoupons.length === 0 && specialCoupons.length === 0) {
+        if(section) section.classList.add('hidden');
+    }
+}
+
+// ==========================================
+// হেল্পার ফাংশন: কুপনের HTML তৈরি করা
+// ==========================================
+function generateCouponHTML(coupon, isSpecial) {
+    const isApplied = appData.coupon && appData.coupon.code === coupon.couponcode;
+    
+    // ---- PRODUCT DISCOUNT LABEL ----
+    let discountLabel = '';
+    if (coupon.type === 'flat') {
+        discountLabel = `<i class="fas fa-tag" style="font-size:8px"></i> ${tL('flat')} ৳${coupon.discountamount} ${tL('off')}`;
+    } else if (coupon.type === 'percentage') {
+        discountLabel = `<i class="fas fa-tag" style="font-size:8px"></i> ${coupon.discountamount}% ${tL('off')}`;
+        if (coupon.maxdiscountamount > 0) {
+            discountLabel += ` <span style="color:#9ca3af;font-weight:400">(${tL('up_to')} ৳${coupon.maxdiscountamount})</span>`;
+        }
+    }
+    
+    // ---- DELIVERY DISCOUNT LABEL ----
+    let deliveryHtml = '';
+    const hasFreeDelivery = coupon.freedelivery === 'yes';
+    const delDiscAmt = parseFloat(coupon.deliverydiscountamount) || 0;
+    
+    if (hasFreeDelivery && delDiscAmt > 0) {
+        deliveryHtml = `<div class="coupon-new-badge del-partial"><i class="fas fa-truck" style="font-size:8px"></i> ${tL('delivery_discount_label')}: -৳${delDiscAmt}</div>`;
+    } else if (hasFreeDelivery) {
+        deliveryHtml = `<div class="coupon-new-badge del-free"><i class="fas fa-truck-fast" style="font-size:8px"></i> ${tL('free_delivery_on_coupon')}</div>`;
+    }
+    
+    // VIP ক্লাস যোগ করা হচ্ছে কি না চেক করা
+    const vipClass = isSpecial ? 'coupon-vip-card' : '';
+    
+    // ---- BUILD CARD ----
+    return `
+        <div class="coupon-new-card ${isApplied ? 'applied' : ''} ${vipClass}">
+            <div class="coupon-new-row1">
+                <div class="coupon-new-code">${coupon.couponcode}</div>
+                <div class="coupon-new-offers">
+                    <div class="coupon-new-badge disc">${discountLabel}</div>
+                    ${deliveryHtml}
+                </div>
+                <button class="coupon-new-apply" onclick="applyCouponFromCartCard('${coupon.couponcode}', this)">${tL('apply_coupon_btn')}</button>
+                <div class="coupon-new-applied-badge"><i class="fas fa-check-circle"></i> Applied</div>
+            </div>
+            <div class="coupon-new-row2">
+                <span>Min: <b>৳${coupon.minpurchase.toLocaleString()}</b></span>
+                <span>Max: <b>৳${coupon.maxdiscountamount.toLocaleString()}</b></span>
+                <span>Exp: <b>${formatCouponDate(coupon.expirydate)}</b></span>
+            </div>
+            <div class="coupon-new-row3">${coupon.description}</div>
+        </div>
+    `;
+}
+// ==========================================
+// APPLY COUPON FROM CART CARD
+// ==========================================
+async function applyCouponFromCartCard(code, btnElement) {
+    const originalText = btnElement.innerText;
+    btnElement.innerText = tL('validating');
+    btnElement.disabled = true;
+    
+    const selectedItems = appData.cart.filter(item => item.selected !== false);
+    
+    if (selectedItems.length === 0) {
+        btnElement.innerText = originalText;
+        btnElement.disabled = false;
+        return Swal.fire({ icon: 'warning', title: tL('fill_all'), text: 'Please select items', timer: 2000, showConfirmButton: false });
+    }
+    
+    try {
+        // ❌ রেগেক্স চেক রিমুভ করা হয়েছে
+        const response = validateCouponLocally(code, selectedItems);
+        
+        if (response.success) {
+            appData.coupon = { 
+                code: response.couponCode, 
+                discount: response.discount, 
+                isFreeDelivery: response.isFreeDelivery,
+                isAllCategory: response.isAllCategory, 
+                applicableCategories: response.applicableCategoriesArray,
+                excludedCategories: response.excludedCategoriesArray,
+                deliveryDiscountAmount: response.deliveryDiscountAmount || 0
+            };
+            localStorage.setItem('coupon', JSON.stringify(appData.coupon));
+            
+            const pageCouponInput = document.getElementById('pageCouponCode');
+            if(pageCouponInput) pageCouponInput.value = response.couponCode;
+            const sidebarCouponInput = document.getElementById('couponCode');
+            if(sidebarCouponInput) sidebarCouponInput.value = '';
+            
+            let msgHtml = `<div style="text-align:left; line-height:1.8;">`;
+            msgHtml += `<span style="color:#16a34a;font-weight:700;">${tL('product_discount')}:</span> <span style="font-size:18px;font-weight:800;color:#16a34a;">৳${response.discount.toFixed(2)}</span>`;
+            
+            if (response.isFreeDelivery && response.deliveryDiscountAmount > 0) {
+                msgHtml += `<br><span style="color:#2563eb;font-weight:700;">${tL('delivery_save')}:</span> <span style="font-size:16px;font-weight:800;color:#2563eb;">৳${response.deliveryDiscountAmount}</span>`;
+            } else if (response.isFreeDelivery) {
+                msgHtml += `<br><span style="color:#16a34a;font-weight:700;">${tL('free_delivery_badge')}</span>`;
+            }
+            msgHtml += `</div>`;
+            updateOrderSummary();
+            updateCartPageUI();
+            renderCartCoupons();
+        } else {
+            Swal.fire({ icon: 'error', title: 'Invalid Coupon', text: response.message });
+        }
+    } catch (error) {
+        Swal.fire('Error', 'Something went wrong.', 'error');
+    } finally {
+        btnElement.innerText = originalText;
+        btnElement.disabled = false;
+    }
+}
+// ==========================================
+// GET RECOMMENDATION PRODUCTS
+// ==========================================
+function getRecommendationProducts() {
+    const allProducts = appData.products || [];
+    const freeDeliveryProducts = allProducts.filter(p => {
+        return (parseFloat(p.extradeliverycharge) === 0) && (p.totalstock > 0);
+    });
+    if (freeDeliveryProducts.length === 0) return [];
+    
+    const seenCategories = new Set();
+    const selected = [];
+    const shuffled = [...freeDeliveryProducts].sort(() => Math.random() - 0.5);
+    
+    for (const p of shuffled) {
+        const mainCat = (p.category || '').split(' > ')[0];
+        if (!seenCategories.has(mainCat)) {
+            seenCategories.add(mainCat);
+            selected.push(p);
+            if (selected.length >= 10) break;
+        }
+    }
+    return selected;
+}
+
+let cartRecExpanded = false;
+let cartRecProducts = [];
+
+function renderCartRecommendations() {
+    const section = document.getElementById('cartRecommendationsSection');
+    
+    if (!appData.cart || appData.cart.length === 0) {
+        if(section) section.classList.add('hidden');
+        return;
+    }
+    
+    const selectedItems = appData.cart.filter(item => item.selected !== false);
+    if (selectedItems.length === 0) {
+        if(section) section.classList.add('hidden');
+        return;
+    }
+    
+    const selectedIds = new Set(selectedItems.map(item => String(item.id)));
+    
+    const allProducts = appData.products || [];
+    const freeDeliveryProducts = allProducts.filter(p => {
+        return (parseFloat(p.extradeliverycharge) === 0) && (p.totalstock > 0) && (!selectedIds.has(String(p.id)));
+    });
+    
+    if (freeDeliveryProducts.length === 0) {
+        if(section) section.classList.add('hidden');
+        return;
+    }
+    
+    const seenCategories = new Set();
+    const selected = [];
+    const shuffled = [...freeDeliveryProducts].sort(() => Math.random() - 0.5);
+    
+    for (const p of shuffled) {
+        const mainCat = (p.category || '').split(' > ')[0];
+        if (!seenCategories.has(mainCat)) {
+            seenCategories.add(mainCat);
+            selected.push(p);
+            if (selected.length >= 10) break;
+        }
+    }
+    
+    cartRecProducts = selected;
+    
+    if (cartRecProducts.length === 0) {
+        if(section) section.classList.add('hidden');
+        return;
+    }
+    
+    if(section) section.classList.remove('hidden');
+    cartRecExpanded = false;
+    
+    document.getElementById('cartRecommendationFirst').innerHTML = createRecCard(cartRecProducts[0], 'cartRec1');
+    
+    document.getElementById('cartSeeMoreBtnContainer').classList.remove('hidden');
+    document.getElementById('cartRecommendationMore').classList.add('hidden');
+    document.getElementById('cartSeeMoreText').innerText = tL('see_more');
+    document.querySelector('#cartSeeMoreBtn i').className = 'fas fa-chevron-down ml-1 text-[10px]';
+    
+    const rt = document.getElementById('cartRecTitle');
+    if(rt) rt.innerText = tL('free_delivery_title');
+}
+
+function toggleCartRecommendations() {
+    cartRecExpanded = !cartRecExpanded;
+    const moreContainer = document.getElementById('cartRecommendationMore');
+    const textEl = document.getElementById('cartSeeMoreText');
+    const iconEl = document.querySelector('#cartSeeMoreBtn i');
+    
+    if (cartRecExpanded) {
+        moreContainer.innerHTML = '';
+        for (let i = 1; i < cartRecProducts.length; i++) {
+            moreContainer.innerHTML += createRecCard(cartRecProducts[i], 'cartRecM_' + i);
+        }
+        moreContainer.classList.remove('hidden');
+        if(textEl) textEl.innerText = tL('see_less');
+        if(iconEl) iconEl.className = 'fas fa-chevron-up ml-1 text-[10px]';
+    } else {
+        moreContainer.classList.add('hidden');
+        if(textEl) textEl.innerText = tL('see_more');
+        if(iconEl) iconEl.className = 'fas fa-chevron-down ml-1 text-[10px]';
+    }
+}
+
+function createRecCard(product, prefix) {
+    const price = parseFloat(product.discountprice || product.price);
+    const originalPrice = parseFloat(product.price);
+    const savings = originalPrice > price ? (originalPrice - price) : 0;
+    const mainCat = (product.category || '').split(' > ')[0];
+    const isSelected = appData.cart.some(item => item.id == product.id && item.selected !== false);
+    
+    return `
+        <div class="rec-new-card">
+            <img src="${product.imagemain}" class="rec-new-img" loading="lazy" alt="${product.name}" onerror="this.src='https://via.placeholder.com/54?text=Img'">
+            <div class="rec-new-info">
+                <div class="rec-new-name">${product.name}</div>
+                <div class="rec-new-cat">${toCategoryTitleCase(mainCat)}</div>
+                <div class="rec-new-price-row">
+                    <span class="rec-new-price">৳${price.toFixed(0)}</span>
+                    ${savings > 0 ? `<span class="rec-new-old">৳${originalPrice.toFixed(0)}</span><span class="rec-new-save">Save ৳${savings.toFixed(0)}</span>` : ''}
+                </div>
+                <div class="rec-new-free"><i class="fas fa-truck-fast" style="font-size:8px"></i> ${tL('free_delivery_sub')}</div>
+            </div>
+            <div id="${prefix}_btn_${product.id}">
+                ${isSelected ? `
+                    <span class="rec-new-btn added"><i class="fas fa-check" style="margin-right:4px"></i>${tL('already_added')}</span>
+                ` : `
+                    <button onclick="addRecToCart('${product.id}')" class="rec-new-btn">${tL('add_item')}</button>
+                `}
+            </div>
+        </div>
+    `;
+}
+// ✅ ফিক্সড কোড — পুরো ফাংশনটি রিপ্লেস করে দিন
+function addRecToCart(productId) {
+    const product = appData.products.find(p => p.id == productId);
+    if (!product) return;
+    
+    const uniqueId = product.id + '_Default';
+    const existing = appData.cart.find(i => i.uniqueId === uniqueId);
+    
+    if (existing) {
+        existing.selected = true;
+    } else {
+        // ✅ ১. কার্ট লিমিট চেক — সর্বোচ্চ ৫টি আইটেম
+        if (appData.cart.length >= 5) {
+            return Swal.fire({
+                icon: 'warning',
+                title: t('limit'),
+                text: t('cart_full'),
+                confirmButtonColor: appData.settings.themecolor || '#2563eb'
+            });
+        }
+        
+        const price = parseFloat(product.discountprice || product.price);
+        appData.cart.push({
+            ...product,
+            quantity: 1,
+            uniqueId: uniqueId,
+            selectedVariant: null,
+            price: price,
+            selected: true
+        });
+    }
+    
+    // ✅ ২. কুপন রিসেট — কার্টে পরিবর্তন হলে কুপন মুছে যাবে
+    resetCouponLogic();
+    // ✅ কুপন কার্ডের "Applied" ব্যাজও আপডেট হবে
+    if (document.getElementById('cartCouponsSection')) renderCartCoupons();
+    
+    localStorage.setItem('cart', JSON.stringify(appData.cart));
+    updateCartBadge();
+    updateOrderSummary();
+    
+    if (document.getElementById('cartPageItems')) updateCartPageUI();
+    if (document.getElementById('cartItems')) updateCartSidebarUI();
+    
+    // ✅ রিকমেন্ডেশন UI আপডেট (Added ব্যাজ দেখানোর জন্য)
+    if (document.getElementById('cartRecommendationsSection')) renderCartRecommendations();
+    
+    const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+    Toast.fire({ icon: 'success', title: tL('added_cart') });
+}
 function loadCheckoutPage() {
     // ==========================================
     // FIX: CHECKOUT SCROLL RESTORATION
@@ -5254,67 +6015,50 @@ function placeOrder() {
                 .withFailureHandler(handleAppError)
                 .changePassword(appData.user.userid, currentPass, newPass);
         }
-// ==========================================
-// HELPER: HANDLE SESSION INVALID ERROR
-// ==========================================
+// ✅ নতুন
 function handleSessionError() {
     Swal.fire({
         icon: 'warning',
         title: 'Session Expired',
-        text: 'আপনার সেশন মেয়াদ শেষ হয়ে গেছে। অর্ডার করতে অথবা অর্ডার দেখতে আবার লগইন করুন।',
+        text: 'আপনার সেশন মেয়াদ শেষ হয়ে গেছে। আবার লগইন করুন।',
         confirmButtonText: 'লগইন করুন',
         confirmButtonColor: appData.settings.themecolor || '#0ea5e9',
-        allowOutsideClick: false, // ইউজারকে জোর করে লগইন করতে বাধ্য করবে
+        allowOutsideClick: false,
         showCancelButton: false
     }).then((result) => {
         if (result.isConfirmed) {
-            // লোকাল স্টোরেজ ক্লিয়ার করা এবং লগইন পেজে নিয়ে যাওয়া
-            logout(); 
+            // logout() কল করা হচ্ছে না — এটাই মূল সমাধান
+            appData.user = null;
+            appData.sessionToken = null;
+            localStorage.removeItem('user');
+            localStorage.removeItem('sessionToken');
             navigateTo('#login');
         }
     });
 }
-// ==========================================
-// SMART SILENT POINTS REFRESH (FIXED: NEW TAB LOGIC)
-// ==========================================
 function silentPointsRefresh() {
     if (!appData.user || !appData.user.userid) return;
     
     // ==========================================
-    // FIX: NEW TAB DETECTION USING SESSIONSTORAGE
+    // FIX: STRICT 24-HOUR THROTTLE (Refresh Safe)
+    // এখন শুধুমাত্র localStorage চেক করবে। 
+    // রিফ্রেশ করলেই সার্ভারে কল যাওয়া বন্ধ হবে।
     // ==========================================
-    let isNewTab = false;
+    let lastSyncTime = 0;
     try {
-        // চেক করুন এই ট্যাবে আগে পয়েন্ট সিঙ্ক হয়েছে কিনা
-        if (!sessionStorage.getItem('ptsSyncedThisTab')) {
-            isNewTab = true; // নতুন ট্যাব বা রিফ্রেশ করা হয়েছে
-            // এই ট্যাবে একবার সিঙ্ক হয়েছে তা মার্ক করে রাখা হচ্ছে
-            sessionStorage.setItem('ptsSyncedThisTab', 'true');
-        }
+        const saved = localStorage.getItem('lastPointsSyncTime');
+        if (saved) lastSyncTime = parseInt(saved);
     } catch (e) {}
-    // ==========================================
-
-    // ১. যদি নতুন ট্যাব হয়, তাহলে ২৪ ঘণ্টার থ্রটল ইগনোর করে সরাসরি নিচের সার্ভার কলে যাবে
-    if (!isNewTab) {
-        // ২. যদি একই ট্যাবে থাকে, তাহলে আগের মতোই ২৪ ঘণ্টা চেক করবে (localStorage দিয়ে)
-        let lastSyncTime = 0;
-        try {
-            const saved = localStorage.getItem('lastPointsSyncTime');
-            if (saved) lastSyncTime = parseInt(saved);
-        } catch (e) {}
-        
-        const timeSinceLastSync = Date.now() - lastSyncTime;
-        
-        // থ্রটল টাইম: ২৪ ঘণ্টা = ৮৬৪০০০০০ মিলিসেকেন্ড
-        const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
-        
-        // যদি ২৪ ঘণ্টা পার হয়নি এবং একই ট্যাবে আছে, তাহলে কল ব্লক করো
-        if (lastSyncTime > 0 && timeSinceLastSync < TWENTY_FOUR_HOURS_MS) {
-            return; 
-        }
+    
+    const timeSinceLastSync = Date.now() - lastSyncTime;
+    const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+    
+    // যদি ২৪ ঘণ্টা পার হয়নি, তবে সার্ভারে যাবে না
+    if (lastSyncTime > 0 && timeSinceLastSync < TWENTY_FOUR_HOURS_MS) {
+        return; 
     }
     
-    // ৩. সার্ভারে যাওয়ার মূল কোড (এখানে কোনো পরিবর্তন করতে হবে না)
+    // ২৪ ঘণ্টা পার হয়ে গেছে, এখন সার্ভারে যাও
     google.script.run
         .withSuccessHandler(res => {
             if (res.success) {
@@ -5328,10 +6072,11 @@ function silentPointsRefresh() {
                     appData.user.pointsexpirydate = newExpiry;
                     localStorage.setItem('user', JSON.stringify(appData.user));
                     
-                    // UI আপডেট
+                    // ১. অ্যাকাউন্ট পেজের ব্যাজ আপডেট
                     const badge = document.getElementById('accountPtsBadge');
                     if (badge) badge.innerText = newPoints;
                     
+                    // ২. চেকআউট পেজের টগল ও সেভিংস আপডেট (গুরুত্বপূর্ণ)
                     const toggle = document.getElementById('ptsToggle');
                     const savingsLabel = document.getElementById('ptsSavingsLabel');
                     if (toggle && savingsLabel) {
@@ -5350,7 +6095,7 @@ function silentPointsRefresh() {
                     console.log(`Points updated: ${oldPoints} → ${newPoints}`);
                 }
                 
-                // সময় সেভ করো (একই ট্যাবে পুনরায় কল রোধ করতে)
+                // সফল হোক বা ব্যর্থ হোক, নতুন সময় সেভ করে দিচ্ছি
                 try {
                     localStorage.setItem('lastPointsSyncTime', Date.now().toString());
                 } catch (e) {}
@@ -5526,35 +6271,66 @@ function silentPointsRefresh() {
                 .withFailureHandler(handleAppError)
                 .sendOtp(email);
         }
-        // ===============================================================
-
-        // ==========================================
-        // UPDATED: LOGOUT WITH SERVER CALL
-        // ==========================================
-        function logout() { 
-            // ১. সার্ভারে লগআউট রিকোয়েস্ট পাঠানো (টোকেন ডিলিট করার জন্য)
-            if (appData.user && appData.user.email) {
-                google.script.run.performLogout(appData.user.email);
-            }
-
-            // ২. লোকাল স্টেট ক্লিয়ার করা
-            appData.user = null; 
-            appData.sessionToken = null; // Token clear
-            localStorage.removeItem('user'); 
-            localStorage.removeItem('sessionToken'); // Storage clear
-            navigateTo('#home'); 
+// ✅ নতুন
+function logout() { 
+    const userEmail = appData.user ? appData.user.email : null;
+    appData.user = null; 
+    appData.sessionToken = null;
+    localStorage.removeItem('user'); 
+    localStorage.removeItem('sessionToken'); 
+    
+    if (userEmail) {
+        google.script.run
+            .withSuccessHandler(() => console.log("Logged out"))
+            .withFailureHandler(() => console.log("Logout failed"))
+            .performLogout(userEmail);
+    }
+    
+    navigateTo('#home'); 
+}
+// ==========================================
+// ULTIMATE FIX: EXACT SCROLL TO COUPON HEADER
+// ==========================================
+function goToCoupons() {
+    // প্রথমে কার্ট পেজে নিয়ে যাও
+    navigateTo('#cart');
+    
+    setTimeout(() => {
+        const couponHeader = document.querySelector('#cartCouponsSection .cart-section-header');
+        if (couponHeader) {
+            // ১. হেডলাইনটি বর্তমানে ডকুমেন্টের ঠিক কোন পজিশনে আছে তা পিক্সেলে বের করা হচ্ছে
+            const elementPosition = couponHeader.getBoundingClientRect().top + window.scrollY;
+            
+            // ২. স্টিকি হেডারের উচ্চতা (৬৪px) + একটু গ্যাপ (১০px) = ৭৪ পিক্সেল বাদ দেওয়া হচ্ছে
+            // যাতে হেডলাইনটি হেডারের ঠিক নিচে দেখা যায়
+            const offsetPosition = elementPosition - 74;
+            
+            // ৩. ব্রাউজারকে বাধ্য করে আমাদের ক্যালকুলেটেড পজিশনে স্ক্রল করানো হচ্ছে
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
         }
-        
-        function changeLanguage() {
-            const newLang = appData.language === 'en' ? 'bn' : 'en';
-            appData.language = newLang;
-            localStorage.setItem('language', newLang);
-            if(appData.user) google.script.run.updateUserProfile(appData.user.userid, { language: newLang });
-            document.getElementById('currentLanguage').textContent = newLang === 'bn' ? 'বাংলা' : 'English';
-            updateUIText(); 
-            loadRoute(window.location.hash || '#home'); 
-            Swal.fire({ icon: 'success', title: newLang === 'bn' ? 'ভাষা পরিবর্তন হয়েছে' : 'Language Changed', timer: 1000, showConfirmButton: false });
-        }
+    }, 600); // ডম লোড হতে একটু বেশি সময় দেওয়া হচ্ছে (৫০০ থেকে বাড়িয়ে ৬০০ করা হয়েছে)
+}
+function changeLanguage() {
+    const newLang = appData.language === 'en' ? 'bn' : 'en';
+    appData.language = newLang;
+    localStorage.setItem('language', newLang);
+    
+    // ❌ নিচের সার্ভার কলের লাইনটি সম্পূর্ণ মুছে দেওয়া হয়েছে
+    // if(appData.user) google.script.run.updateUserProfile(appData.user.userid, { language: newLang });
+    
+    // ✅ ফিক্স: এলিমেন্ট থাকলেই টেক্সট চেঞ্জ হবে
+    const currentLangEl = document.getElementById('currentLanguage');
+    if(currentLangEl) {
+        currentLangEl.textContent = newLang === 'bn' ? 'বাংলা' : 'English';
+    }
+    
+    updateUIText(); 
+    loadRoute(window.location.hash || '#home'); 
+    Swal.fire({ icon: 'success', title: newLang === 'bn' ? 'ভাষা পরিবর্তন হয়েছে' : 'Language Changed', timer: 1000, showConfirmButton: false });
+}
 // ==========================================
 // NEW: CONFIRMATION FOR LOGOUT
 // ==========================================
@@ -5703,7 +6479,6 @@ function openProductInquiry() {
 function searchProducts(query) {
     const container = document.getElementById('searchResults');
     
-    // ১. কুয়েরি খালি থাকলে রেজাল্ট লুকান
     if (!query || query.trim().length < 1) {
         container.classList.add('hidden');
         container.innerHTML = '';
@@ -5712,14 +6487,12 @@ function searchProducts(query) {
 
     const term = query.toLowerCase().trim();
 
-    // ২. লোকাল ডাটা ফিল্টার করা
     const results = appData.products.filter(p => 
         (p.name && p.name.toLowerCase().includes(term)) || 
         (p.category && p.category.toLowerCase().includes(term)) || 
         (p.description && p.description.toLowerCase().includes(term))
     );
 
-    // ৩. রেজাল্ট দেখানো (Professional UI)
     if (results.length > 0) {
         container.classList.remove('hidden');
         container.innerHTML = results.map(p => `
@@ -5734,13 +6507,12 @@ function searchProducts(query) {
                     <h4 class="text-sm font-bold text-gray-800 truncate group-hover:text-primary transition-colors">${p.name}</h4>
                     <div class="flex items-center justify-between mt-1">
                         <span class="text-xs font-bold text-primary">৳ ${p.discountprice || p.price}</span>
-                        <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">${p.category.split(' > ')[0]}</span>
+                        <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">${toCategoryTitleCase(p.category.split(' > ')[0])}</span>
                     </div>
                 </div>
             </div>
         `).join('');
     } else {
-        // ৪. কিছু না পাওয়া গেলে
         container.classList.remove('hidden');
         container.innerHTML = `
             <div class="p-4 text-center flex flex-col items-center justify-center text-gray-400">
@@ -5754,24 +6526,20 @@ function searchProducts(query) {
         function toggleSearch() { const sb = document.getElementById('searchBar'); sb.classList.toggle('hidden'); if(!sb.classList.contains('hidden')) document.getElementById('searchInput').focus(); }
         function clearSearch() { document.getElementById('searchInput').value = ''; document.getElementById('searchResults').classList.add('hidden'); }
 
-        // ================= FEATURE: Filter Modal =================
         function initFilterOptions() {
             const select = document.getElementById('filterCategory');
             if(!select) return;
             
-            // ==========================================
-            // UPDATED: POPULATE UNIQUE MAIN CATEGORIES
-            // ==========================================
             const allMainCats = appData.categories.map(c => c.categoryname.split(' > ')[0]);
             const uniqueMainCats = [...new Set(allMainCats)].sort();
             
-            // FIX: Translation for "All Categories"
             select.innerHTML = '<option value="all">' + t('all_categories') + '</option>' + 
-                uniqueMainCats.map(c => `<option value="${c}">${c}</option>`).join('');
+                uniqueMainCats.map(c => `<option value="${c}">${toCategoryTitleCase(c)}</option>`).join('');
             
-            // ADD CHANGE LISTENER FOR SUB-CATEGORY DROPDOWN
             select.onchange = (e) => {
-                const selectedMain = e.target.value;
+                // সমাধান: ড্রপডাউন থেকে যে নামটা আসছে সেটাকে আবার ছোট হাতে করে নেওয়া হচ্ছে
+                const selectedMain = normalizeCategoryPath(e.target.value);
+                
                 const subCatContainer = document.getElementById('subCategoryFilterContainer');
                 const subCatSelect = document.getElementById('filterSubCategory');
                 
@@ -5780,14 +6548,13 @@ function searchProducts(query) {
                     return;
                 }
 
-                // Find sub-categories
                 const subCats = appData.categories
                     .filter(c => c.categoryname.startsWith(selectedMain + ' > '))
                     .map(c => c.categoryname);
 
                 if (subCats.length > 0) {
                     subCatSelect.innerHTML = '<option value="all">' + t('select_sub_category') + '</option>' +
-                        subCats.map(sc => `<option value="${sc}">${sc.split(' > ')[1]}</option>`).join('');
+                        subCats.map(sc => `<option value="${sc}">${toCategoryTitleCase(sc.split(' > ')[1])}</option>`).join('');
                     subCatContainer.classList.remove('hidden');
                 } else {
                     subCatContainer.classList.add('hidden');
@@ -5955,7 +6722,7 @@ function searchProducts(query) {
                     
                     <div class="border-t border-gray-800 pt-6 text-center text-sm text-white font-bold">
                         &copy; ${year} ${s.sitename}. All rights reserved.
-                        <br>Developed by safa team
+                        <br>Developed by safaboxbd team
                     </div>
                 </div>
             </footer>`;
@@ -6458,7 +7225,7 @@ window.onpopstate = function(event) {
                 Swal.fire({
                     html: `
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.75); color: white; padding: 10px 20px; border-radius: 50px; font-family: 'Poppins', sans-serif; font-size: 14px; white-space: nowrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: max-content;">
-                            <img src="${siteLogo}" style="height: 20px; width: auto; object-fit: contain; display: block;">
+<img src="${siteLogo}" style="height: 20px; width: auto; object-fit: contain; display: block; filter: brightness(0) invert(1);">
                             <span>${t('Press back again to exit')}</span>
                         </div>
                     `,
